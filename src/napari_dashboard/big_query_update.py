@@ -104,7 +104,7 @@ def is_ci_install(system_release: str) -> bool:
         return True
     if "gcp" in system_release:
         return True
-    if "cloud-amd64" in system_release:
+    if "cloud-amd64" in system_release:  # noqa: SIM103
         return True
     return False
 
@@ -510,7 +510,7 @@ def send_zulip_message(message: str):
         {
             "type": "stream",
             "to": "metrics and analytics",
-            "subject": "Google big query download",
+            "subject": "Deploy dashboard",
             "content": message,
         }
     )
