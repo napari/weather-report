@@ -8,8 +8,8 @@ from typing import Optional, Union
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive, GoogleDriveFile
 
-from napari_dashboard.db_update.__main__ import main as db_update_main
-from napari_dashboard.get_webpage.__main__ import main as get_webpage_main
+COMPRESSED_DB = "dashboard.db.bz2"
+DB_PATH = "dashboard.db"
 
 
 def login_with_local_webserver():
@@ -96,7 +96,7 @@ def upload_xlsx_dump():
     file.Upload()
 
 
-def upload_db_dump(file_name="dashboard.db.bz2"):
+def upload_db_dump(file_name=COMPRESSED_DB):
     drive = GoogleDrive(get_auth())
     file = get_or_create_gdrive_file(drive, file_name)
     file.SetContentFile(file_name)
@@ -137,7 +137,7 @@ def uncompressed_file(compressed_file_path, original_file_path):
         original_file.writelines(compressed_file)
 
 
-def fetch_database(db_path="dashboard.db"):
+def fetch_database(db_path=DB_PATH):
     """Fetch the database from Google Drive."""
     logging.info("fetching database")
 
@@ -155,23 +155,11 @@ def fetch_database(db_path="dashboard.db"):
             db_file.GetContentFile(str(archive_path))
             logging.info("uncompressing database")
             uncompressed_file(archive_path, db_path)
+            logging.info("migrate database")
+            # call alembic upgrade
+            from alembic.config import main
+
+            main(["upgrade", "head"], prog="alembic")
+
     else:
         logging.info("Database not found")
-
-
-def main():
-    dashboard_path = "dashboard.db"
-    fetch_database(dashboard_path)
-    print("Updating database")
-    updated = db_update_main([dashboard_path])
-    print("generating webpage")
-    get_webpage_main(["webpage", dashboard_path, "--no-excel-dump"])
-    print("Compressing database")
-    compress_file(dashboard_path, "dashboard.db.bz2")
-    if updated:
-        print("Uploading database")
-        upload_db_dump()
-
-
-if __name__ == "__main__":
-    main()

@@ -3,6 +3,10 @@ import datetime
 import os
 from pathlib import Path
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from tqdm import tqdm
+
 from napari_dashboard.db_schema.github import PullRequestCommits
 from napari_dashboard.db_update.github import (
     ensure_user,
@@ -11,9 +15,6 @@ from napari_dashboard.db_update.github import (
 )
 from napari_dashboard.db_update.util import setup_cache
 from napari_dashboard.get_webpage.gdrive import fetch_database
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-from tqdm import tqdm
 
 db_path = Path(__file__).parent.parent / "dashboard.db"
 

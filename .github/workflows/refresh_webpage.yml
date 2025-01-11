@@ -23,7 +23,7 @@ jobs:
       with:
         python-version: 3.11
     - name: Install uv
-      uses: astral-sh/setup-uv@v3
+      uses: astral-sh/setup-uv@v5
       with:
         enable-cache: true
         cache-dependency-glob: "uv.lock"
@@ -46,7 +46,18 @@ jobs:
         ZULIP_API_KEY: ${{ secrets.ZULIP_API_KEY }}
         # I'm using GH_TOKEN_ because using GITHUB_TOKEN during development crash gh app
 
+    - name: Set zulip message
+      if: ${{ always() }}
+      id: set_zulip_message
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "MESSAGE=Google big query finished successful" >> $GITHUB_ENV
+        else
+          echo "MESSAGE=Google big query failed" >> $GITHUB_ENV
+        fi
+
     - name: Send a stream message
+      if: ${{ always()}}
       uses: zulip/github-actions-zulip/send-message@v1
       with:
         api-key: ${{ secrets.ZULIP_API_KEY }}
@@ -54,22 +65,10 @@ jobs:
         organization-url: "https://napari.zulipchat.com"
         to: "metrics and analytics"
         type: "stream"
-        topic: "Google big query download"
-        content: "Google big query finished successful"
+        topic: "Deploy dashboard"
+        content: ${{ env.MESSAGE }}
 
-    - name: Send a stream message
-      uses: zulip/github-actions-zulip/send-message@v1
-      if: ${{ failure() }}
-      with:
-        api-key: ${{ secrets.ZULIP_API_KEY }}
-        email: "dashboard-bot@napari.zulipchat.com"
-        organization-url: "https://napari.zulipchat.com"
-        to: "metrics and analytics"
-        type: "stream"
-        topic: "Google big query download"
-        content: "Google big query failed"
-
-  build:
+  fetch_api_data:
     needs: big_query_update
     runs-on: ubuntu-latest
     timeout-minutes: 300
@@ -84,7 +83,7 @@ jobs:
       with:
         python-version: 3.11
     - name: Install uv
-      uses: astral-sh/setup-uv@v3
+      uses: astral-sh/setup-uv@v5
       with:
         enable-cache: true
         cache-dependency-glob: "uv.lock"
@@ -97,23 +96,26 @@ jobs:
       run: |
         uv sync
 
-    - name: Build the dashboard
+    - name: Update db from api
       run: |
-        uv run traceback-with-variables napari_dashboard.get_webpage.gdrive
+        uv run traceback-with-variables napari_dashboard.api_update
       env:
         PEPY_KEY: ${{ secrets.PEPY_KEY }}
         GH_TOKEN_: ${{ secrets.GITHUB_TOKEN }}
         # I'm using GH_TOKEN_ because using GITHUB_TOKEN during development crash gh app
 
-    - name: Deploy Dashboard
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./webpage
-        publish_branch: gh_pages
-        exclude_assets: 'napari_dashboard.xlsx'
+    - name: Set zulip message
+      if: ${{ always() }}
+      id: set_zulip_message
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "MESSAGE=API update successfully" >> $GITHUB_ENV
+        else
+          echo "MESSAGE=API update failed" >> $GITHUB_ENV
+        fi
 
     - name: Send a stream message
+      if: ${{ always()}}
       uses: zulip/github-actions-zulip/send-message@v1
       with:
         api-key: ${{ secrets.ZULIP_API_KEY }}
@@ -122,16 +124,70 @@ jobs:
         to: "metrics and analytics"
         type: "stream"
         topic: "Deploy dashboard"
-        content: "Dashboard deployed successfully"
+        content: ${{ env.MESSAGE }}
 
-    - name: Send a stream message
-      uses: zulip/github-actions-zulip/send-message@v1
-      if: ${{ failure() }}
-      with:
-        api-key: ${{ secrets.ZULIP_API_KEY }}
-        email: "dashboard-bot@napari.zulipchat.com"
-        organization-url: "https://napari.zulipchat.com"
-        to: "metrics and analytics"
-        type: "stream"
-        topic: "Deploy dashboard"
-        content: "Dashboard deployment failed"
+  update_webpage:
+    needs: fetch_api_data
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    permissions:
+      contents: 'write'
+      id-token: 'write'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: create service-secrets.json
+        run: |
+          echo "$SERVICE_SECRETS" > service-secrets.json
+        env:
+          SERVICE_SECRETS: ${{ secrets.SERVICE_SECRETS }}
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Build the dashboard
+        run: |
+          uv run traceback-with-variables napari_dashboard.webpage_update
+        env:
+          PEPY_KEY: ${{ secrets.PEPY_KEY }}
+          GH_TOKEN_: ${{ secrets.GITHUB_TOKEN }}
+          # I'm using GH_TOKEN_ because using GITHUB_TOKEN during development crash gh app
+
+      - name: Deploy Dashboard
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./webpage
+          publish_branch: gh_pages
+          exclude_assets: 'napari_dashboard.xlsx'
+
+      - name: Set zulip message
+        if: ${{ always() }}
+        id: set_zulip_message
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "MESSAGE=Dashboard deployed successfully" >> $GITHUB_ENV
+          else
+            echo "MESSAGE=Dashboard deployment failed" >> $GITHUB_ENV
+          fi
+
+      - name: Send a stream message
+        if: ${{ always()}}
+        uses: zulip/github-actions-zulip/send-message@v1
+        with:
+          api-key: ${{ secrets.ZULIP_API_KEY }}
+          email: "dashboard-bot@napari.zulipchat.com"
+          organization-url: "https://napari.zulipchat.com"
+          to: "metrics and analytics"
+          type: "stream"
+          topic: "Deploy dashboard"
+          content: ${{ env.MESSAGE }}

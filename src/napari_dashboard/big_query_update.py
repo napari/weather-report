@@ -18,7 +18,9 @@ from tqdm import tqdm
 
 from napari_dashboard.db_schema.base import Base
 from napari_dashboard.db_schema.pypi import PyPi
-from napari_dashboard.get_webpage.gdrive import (
+from napari_dashboard.gdrive_util import (
+    COMPRESSED_DB,
+    DB_PATH,
     compress_file,
     fetch_database,
     upload_db_dump,
@@ -48,6 +50,10 @@ WHERE
 ORDER BY
   timestamp;
 """
+
+
+class EstimationError(Exception):
+    pass
 
 
 @dataclass
@@ -98,7 +104,7 @@ def is_ci_install(system_release: str) -> bool:
         return True
     if "gcp" in system_release:
         return True
-    if "cloud-amd64" in system_release:
+    if "cloud-amd64" in system_release:  # noqa: SIM103
         return True
     return False
 
@@ -112,6 +118,7 @@ def load_from_query(df: pd.DataFrame, engine: Engine):
             # print(row)
             obj = PyPi(
                 timestamp=row[1].timestamp,
+                date=row[1].timestamp.date(),
                 country_code=row[1].country_code,
                 project=project_info.name,
                 version=str(project_info.version),
@@ -381,6 +388,9 @@ def load_from_czi_file(czi_file: str, engine) -> None:
                 timestamp=datetime.datetime.strptime(
                     row[1].TIMESTAMP, "%Y-%m-%d %H:%M:%S.%f"
                 ),
+                date=datetime.datetime.strptime(
+                    row[1].TIMESTAMP, "%Y-%m-%d %H:%M:%S.%f"
+                ).date(),
                 country_code=row[1].COUNTRY_CODE,
                 project=row[1].PROJECT,
                 version=row[1].FILE_VERSION,
@@ -413,7 +423,7 @@ def make_big_query_and_save_to_database(
     )
     if upper_constraints - last_entry_date < datetime.timedelta(hours=10):
         send_zulip_message("Too little time between the last entry and now")
-        return True
+        return False
     if upper_constraints - last_entry_date > datetime.timedelta(days=15):
         raise ValueError("Too much time between the last entry and now")
 
@@ -437,7 +447,7 @@ def make_big_query_and_save_to_database(
             f"Estimated bytes to processed query: {humanize.naturalsize(estimated_bytes)}. "
             f"Limit: {humanize.naturalsize(PROCESSED_BYTES_LIMIT)}."
         )
-        return False
+        raise EstimationError
     query_job = client.query(qr)
 
     results = query_job.result()
@@ -500,7 +510,7 @@ def send_zulip_message(message: str):
         {
             "type": "stream",
             "to": "metrics and analytics",
-            "subject": "Google big query download",
+            "subject": "Deploy dashboard",
             "content": message,
         }
     )
@@ -508,7 +518,13 @@ def send_zulip_message(message: str):
 
 def main(args: None | list[str] = None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("db_path", help="Path to the database", type=Path)
+    parser.add_argument(
+        "db_path",
+        help="Path to the database",
+        type=Path,
+        default=Path(DB_PATH),
+        nargs="?",
+    )
     args = parser.parse_args(args)
 
     processed_bytes = get_information_about_processed_bytes()
@@ -524,12 +540,14 @@ def main(args: None | list[str] = None):
     fetch_database(args.db_path.absolute())
     engine = create_engine(f"sqlite:///{args.db_path.absolute()}")
     Base.metadata.create_all(engine)
-
-    if not make_big_query_and_save_to_database(engine, processed_bytes):
+    try:
+        updated = make_big_query_and_save_to_database(engine, processed_bytes)
+    except EstimationError:
         return -2
-    compress_file(args.db_path.absolute(), "dashboard.db.bz2")
-    print("Uploading database")
-    upload_db_dump("dashboard.db.bz2")
+    if updated:
+        compress_file(args.db_path.absolute(), COMPRESSED_DB)
+        print("Uploading database")
+        upload_db_dump(COMPRESSED_DB)
     return 0
 
 

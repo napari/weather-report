@@ -43,6 +43,7 @@ dependencies = [
     "XlsxWriter",
     "zulip",
     "traceback_with_variables",
+    "alembic>=1.14.0",
 ]
 
 [project.urls]
@@ -158,6 +159,8 @@ ignore = [
     "COM812", # conflicting with formatter
     "ISC001", # conflicting with formatter
 ]
+[tool.ruff.lint.per-file-ignores]
+"migrations/*" = ["INP001"]
 
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"

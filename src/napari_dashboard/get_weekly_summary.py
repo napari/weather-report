@@ -5,6 +5,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
+from napari_dashboard.gdrive_util import fetch_database
 from napari_dashboard.gen_stat.github import (
     get_last_week,
     get_last_week_active_core_devs,
@@ -16,7 +17,6 @@ from napari_dashboard.gen_stat.github import (
     get_last_week_updated_issues_md,
     get_last_week_updated_pr_md,
 )
-from napari_dashboard.get_webpage.gdrive import fetch_database
 
 
 def generate_weekly_summary(fetch_db: bool) -> list[str]:

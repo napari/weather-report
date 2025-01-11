@@ -2,7 +2,7 @@ name: Weekly activity report
 
 on:
   schedule:
-    - cron: '0 1 * * 1'
+    - cron: '0 12 * * 1'
   push:
     branches:
       - main
@@ -24,11 +24,11 @@ jobs:
         with:
           python-version: 3.11
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
-      
+
       - name: create service-secrets.json
         run: |
           echo "$SERVICE_SECRETS" > service-secrets.json
