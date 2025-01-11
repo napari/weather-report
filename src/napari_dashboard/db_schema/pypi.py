@@ -14,7 +14,7 @@ ibis.Schema {
 }
 """
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from sqlalchemy import (
@@ -35,6 +35,7 @@ class PyPi(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    date: Mapped[date] = mapped_column(Date)
     country_code: Mapped[Optional[str]] = mapped_column(String)
     project: Mapped[str] = mapped_column(String)
     version: Mapped[str] = mapped_column(String)

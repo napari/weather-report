@@ -155,5 +155,11 @@ def fetch_database(db_path=DB_PATH):
             db_file.GetContentFile(str(archive_path))
             logging.info("uncompressing database")
             uncompressed_file(archive_path, db_path)
+            logging.info("migrate database")
+            # call alembic upgrade
+            from alembic.config import main
+
+            main(["upgrade", "head"], prog="alembic")
+
     else:
         logging.info("Database not found")
