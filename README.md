@@ -32,4 +32,3 @@ To properly run the workflows you need to set up the following secrets in the re
 * `SERVICE_SECRETS` - JSON file with Google Service Account credentials. The service account should have access to Google Drive and Google Big Query.
 * `ZULIP_API_KEY` - API key for Zulip bot. Key required to send messages to Zulip.
 * `PEPY_KEY` - API key for pepy.tech. Key required to fetch data about plugin downloads.
-
