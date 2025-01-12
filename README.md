@@ -9,11 +9,11 @@ This code is using Google Drive as data storage between different sessions.
 
 There are two workflows triggered by GitHub Actions:
 
-1. `weekly_zulip_report.yml` - this workflow is triggered every Monday at 12:00 UTC. And on every push to the `main` branch. 
-  It fetches the data from Google Drive and based on it, it prepares weekly report about opened, updated and closed issues and pull requests in the last week.
+1. `weekly_zulip_report.yml` - this workflow is triggered every Monday at 12:00 UTC and on every push to the `main` branch. 
+  It fetches the data from Google Drive and uses it to prepare the weekly report about opened, updated, and closed issues and pull requests in the last week.
   If it is triggered by push, the output is sent to `metrics and analytics` stream, otherwise it is sent to `core-dev` stream.
 
-2. `refresh_webpage.yml` - this workflow fetch the latest data from Google Drive fetch most recent data from:
+2. `refresh_webpage.yml` - this workflow also fetches the latest data from Google Drive, consisting of the recent data from:
     * Google Big Query (napari downloads from pypi)
     * GitHub API (Stars, Pull Requests, Issues for napari, docs and npe2)
     * forum.image.sc (number of topics and posts)
