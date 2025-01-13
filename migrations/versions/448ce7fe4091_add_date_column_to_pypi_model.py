@@ -77,7 +77,7 @@ def upgrade() -> None:
     # Create new table SQL
     create_table_sql = f"""
     CREATE TABLE pypi_downloads_new (
-        {', '.join(columns)}
+        {", ".join(columns)}
     )
     """
 
