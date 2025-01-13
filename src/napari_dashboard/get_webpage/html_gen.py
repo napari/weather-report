@@ -31,8 +31,8 @@ from napari_dashboard.gen_stat.pypi import (
     get_download_info,
     get_download_per_operating_system,
     get_download_per_python_version,
-    get_pepy_download_per_day,
     get_per_country_download,
+    get_pypi_download_per_day,
     get_recent_releases_date,
     get_total_pypi_download,
     is_country,
@@ -443,7 +443,7 @@ def generate_webpage(
         pypi_download_info = get_download_info(
             session, ["napari", "npe2", "napari-plugin-manager"]
         )
-        napari_downloads_per_day = get_pepy_download_per_day(session, "napari")
+        napari_downloads_per_day = get_pypi_download_per_day(session, "napari")
         active_plugin_stats = get_active_packages(
             session, packages=valid_plugins, threshold=1500
         )
