@@ -103,6 +103,17 @@ def get_pepy_download_per_day(session: Session, package: str):
     )
 
 
+def get_pypi_download_per_day(session: Session, package: str):
+    assert package == "napari", "We only collect data for napari now"
+    return dict(
+        session.query(PyPi.date, func.count(PyPi.timestamp))
+        .filter(PyPi.project == package)
+        .filter(PyPi.ci_install.isnot(True))
+        .group_by(PyPi.date)
+        .all()
+    )
+
+
 def get_total_pypi_download(session: Session, packages: set[str]):
     return (
         session.query(func.sum(PePyTotalDownloads.downloads))
