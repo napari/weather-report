@@ -449,7 +449,6 @@ def generate_webpage(
         pypi_download_info = get_download_info(
             session, ["napari", "npe2", "napari-plugin-manager"]
         )
-        napari_downloads_per_day = get_pepy_download_per_day(session, "napari")
         napari_conda_downloads_per_day = get_conda_download_per_day(
             session, "napari"
         )
