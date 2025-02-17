@@ -11,8 +11,10 @@ from sqlalchemy.orm import Session
 
 from napari_dashboard.db_update.util import setup_cache
 from napari_dashboard.gen_stat.conda import (
+    get_conda_download_per_day,
     get_conda_latest_download_info,
     get_conda_total_download_info,
+    get_last_month_version_downloads_per_version,
     get_total_conda_download,
 )
 from napari_dashboard.gen_stat.generate_excel_file import generate_excel_file
@@ -315,8 +317,12 @@ def generate_download_per_day(napari_downloads_per_day):
     )
 
 
-def generate_python_version_pie_chart(python_version_info):
+def generate_version_pie_chart(
+    python_version_info: list[tuple[str, int]], filter_value: int = 0
+):
     df = pd.DataFrame(python_version_info, columns=["version", "downloads"])
+    if filter_value > 0:
+        df = df[df["downloads"] > filter_value]
     return px.pie(df, values="downloads", names="version").to_html(
         full_html=False, include_plotlyjs="cdn"
     )
@@ -443,6 +449,12 @@ def generate_webpage(
         pypi_download_info = get_download_info(
             session, ["napari", "npe2", "napari-plugin-manager"]
         )
+        napari_conda_downloads_per_day = get_conda_download_per_day(
+            session, "napari"
+        )
+        napari_conda_last_month_version_downloads = (
+            get_last_month_version_downloads_per_version(session, "napari")
+        )
         napari_downloads_per_day = get_pypi_download_per_day(session, "napari")
         active_plugin_stats = get_active_packages(
             session, packages=valid_plugins, threshold=1500
@@ -484,12 +496,6 @@ def generate_webpage(
         "project": "Napari",
         "author": "Grzegorz Bokota",
         "stats": stats,
-        "napari_downloads_per_day_dates": [
-            x.isoformat() for x in napari_downloads_per_day
-        ],
-        "napari_downloads_per_day_values": list(
-            napari_downloads_per_day.values()
-        ),
         "today": datetime.datetime.now().strftime("%Y-%m-%d"),
         "base_day": since_date.strftime("%Y-%m-%d"),
         "pypi_downloads": pypi_download_info,
@@ -503,10 +509,16 @@ def generate_webpage(
             "under_active_development": under_active_development,
             "skip": skip_plugins,
         },
-        "py_version": generate_python_version_pie_chart(python_version_info),
+        "py_version": generate_version_pie_chart(python_version_info, 100),
         "os_plot": generate_os_pie_chart(os_info),
         "napari_downloads_per_day": generate_download_per_day(
             napari_downloads_per_day
+        ),
+        "napari_conda_downloads_per_day": generate_download_per_day(
+            napari_conda_downloads_per_day
+        ),
+        "napari_conda_version_last_month": generate_version_pie_chart(
+            napari_conda_last_month_version_downloads, 100
         ),
         "issue_activity": generate_issue_plot(stats),
         "issue_activity2": generate_issue_plot2(stats),

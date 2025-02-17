@@ -359,6 +359,14 @@ html[data-bs-theme="dark"] .table thead th {
                   {{ napari_downloads_per_day }}
                   {{ py_version }}
                   {{ os_plot }}
+                    <h5>Daily download form conda</h5>
+                    {{ napari_conda_downloads_per_day }}
+                    <small>
+                        Conda API only provides information about total downloads.
+                        So if we have holes in data, the information is interpolated and show as straight line.
+                    </small>
+                    <h6>Version downloaded from conda in last 30 days</h6>
+                    {{ napari_conda_version_last_month }}
                 {% endcall %}
               </div>
             </div>
