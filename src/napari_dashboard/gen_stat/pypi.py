@@ -151,7 +151,7 @@ def get_download_per_python_version(
 ):
     return sorted(
         filter(
-            lambda x: x[0] != "null" and x[1] > 100,
+            lambda x: x[0] != "null",
             session.query(
                 PyPiDownloadPerPythonVersion.python_version_name,
                 func.sum(PyPiDownloadPerPythonVersion.downloads),
