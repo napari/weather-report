@@ -46,678 +46,562 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 <head>
-    <script src="color-modes.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    /* Light theme (default) */
+body {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+.navbar-brand {
+  font-weight: bold;
+}
+.sidebar {
+  background-color: #fff;
+  border-right: 1px solid #dee2e6;
+  position: fixed;
+}
+.sidebar .nav-link.active {
+  background-color: #e9ecef;
+  font-weight: 500;
+}
+.card {
+  margin-bottom: 1rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+}
+.card-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+}
+.table thead th {
+  border-bottom: 2px solid #dee2e6;
+}
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="{{ author }}">
-    <meta name="generator" content="Hugo 0.122.0">
-    <title>{{ title }}</title>
+/* Dark theme overrides */
+html[data-bs-theme="dark"] body {
+  background-color: #212529;
+  color: #f8f9fa;
+}
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
+html[data-bs-theme="dark"] .sidebar {
+  background-color: #343a40;
+  border-right: 1px solid #454d55;
+  position: fixed;
+}
 
+html[data-bs-theme="dark"] .sidebar .nav-link.active {
+  background-color: #495057;
+  font-weight: 500;
+  color: #f8f9fa;
+}
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+html[data-bs-theme="dark"] .card {
+  background-color: #343a40;
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.5);
+  color: #f8f9fa;
+}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+html[data-bs-theme="dark"] .card-header {
+  background-color: #454d55;
+  border-bottom: 1px solid #4d555d;
+  color: #f8f9fa;
+}
 
-    <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-
-        .b-example-divider {
-            width: 100%;
-            height: 3rem;
-            background-color: rgba(0, 0, 0, .1);
-            border: solid rgba(0, 0, 0, .15);
-            border-width: 1px 0;
-            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-        }
-
-        .b-example-vr {
-            flex-shrink: 0;
-            width: 1.5rem;
-            height: 100vh;
-        }
-
-        .bi {
-            vertical-align: -.125em;
-            fill: currentColor;
-        }
-
-        .nav-scroller {
-            position: relative;
-            z-index: 2;
-            height: 2.75rem;
-            overflow-y: hidden;
-        }
-
-        .nav-scroller .nav {
-            display: flex;
-            flex-wrap: nowrap;
-            padding-bottom: 1rem;
-            margin-top: -1px;
-            overflow-x: auto;
-            text-align: center;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .btn-bd-primary {
-            --bd-violet-bg: #712cf9;
-            --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-
-            --bs-btn-font-weight: 600;
-            --bs-btn-color: var(--bs-white);
-            --bs-btn-bg: var(--bd-violet-bg);
-            --bs-btn-border-color: var(--bd-violet-bg);
-            --bs-btn-hover-color: var(--bs-white);
-            --bs-btn-hover-bg: #6528e0;
-            --bs-btn-hover-border-color: #6528e0;
-            --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-            --bs-btn-active-color: var(--bs-btn-hover-color);
-            --bs-btn-active-bg: #5a23c8;
-            --bs-btn-active-border-color: #5a23c8;
-        }
-
-        .bd-mode-toggle {
-            z-index: 1500;
-        }
-
-        .bd-mode-toggle .dropdown-menu .active .bi {
-            display: block !important;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 250;
-            left: 0;
-            overflow-y: auto;
-            height: 100%;
-        }
-    </style>
-
-
-    <!-- Custom styles for this template -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
-    <!-- Custom styles for this template -->
-    <link href="dashboard.css" rel="stylesheet">
+html[data-bs-theme="dark"] .table thead th {
+  border-bottom: 2px solid #4d555d;
+}
+  </style>
 </head>
-<body>
-<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-    <symbol id="check2" viewBox="0 0 16 16">
-        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-    </symbol>
-    <symbol id="circle-half" viewBox="0 0 16 16">
-        <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
-    </symbol>
-    <symbol id="moon-stars-fill" viewBox="0 0 16 16">
-        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
-        <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
-    </symbol>
-    <symbol id="sun-fill" viewBox="0 0 16 16">
-        <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
-    </symbol>
-</svg>
-
-<div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-    <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
-            id="bd-theme"
-            type="button"
-            aria-expanded="false"
-            data-bs-toggle="dropdown"
-            aria-label="Toggle theme (auto)">
-        <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
-            <use href="#circle-half"></use>
-        </svg>
-        <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
-        <li>
-            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light"
-                    aria-pressed="false">
-                <svg class="bi me-2 opacity-50" width="1em" height="1em">
-                    <use href="#sun-fill"></use>
-                </svg>
-                Light
-                <svg class="bi ms-auto d-none" width="1em" height="1em">
-                    <use href="#check2"></use>
-                </svg>
+<body data-bs-spy="scroll" data-bs-target=".sidebar" data-bs-offset="100" tabindex="0">
+  <!-- Top Navbar -->
+  <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Napari Dashboard</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <button class="btn btn-outline-light dropdown-toggle" id="themeToggle" data-bs-toggle="dropdown" aria-expanded="false">
+              Theme
             </button>
-        </li>
-        <li>
-            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark"
-                    aria-pressed="false">
-                <svg class="bi me-2 opacity-50" width="1em" height="1em">
-                    <use href="#moon-stars-fill"></use>
-                </svg>
-                Dark
-                <svg class="bi ms-auto d-none" width="1em" height="1em">
-                    <use href="#check2"></use>
-                </svg>
-            </button>
-        </li>
-        <li>
-            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto"
-                    aria-pressed="true">
-                <svg class="bi me-2 opacity-50" width="1em" height="1em">
-                    <use href="#circle-half"></use>
-                </svg>
-                Auto
-                <svg class="bi ms-auto d-none" width="1em" height="1em">
-                    <use href="#check2"></use>
-                </svg>
-            </button>
-        </li>
-    </ul>
-</div>
-
-
-<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-    <symbol id="calendar3" viewBox="0 0 16 16">
-        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
-        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-    </symbol>
-    <symbol id="cart" viewBox="0 0 16 16">
-        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-    </symbol>
-    <symbol id="chevron-right" viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-    </symbol>
-    <symbol id="door-closed" viewBox="0 0 16 16">
-        <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z"/>
-        <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z"/>
-    </symbol>
-    <symbol id="file-earmark" viewBox="0 0 16 16">
-        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
-    </symbol>
-    <symbol id="file-earmark-text" viewBox="0 0 16 16">
-        <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
-        <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
-    </symbol>
-    <symbol id="gear-wide-connected" viewBox="0 0 16 16">
-        <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z"/>
-    </symbol>
-    <symbol id="graph-up" viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-              d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
-    </symbol>
-    <symbol id="house-fill" viewBox="0 0 16 16">
-        <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"/>
-        <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"/>
-    </symbol>
-    <symbol id="list" viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-    </symbol>
-    <symbol id="people" viewBox="0 0 16 16">
-        <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/>
-    </symbol>
-    <symbol id="plus-circle" viewBox="0 0 16 16">
-        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-    </symbol>
-    <symbol id="puzzle" viewBox="0 0 16 16">
-        <path d="M3.112 3.645A1.5 1.5 0 0 1 4.605 2H7a.5.5 0 0 1 .5.5v.382c0 .696-.497 1.182-.872 1.469a.459.459 0 0 0-.115.118.113.113 0 0 0-.012.025L6.5 4.5v.003l.003.01c.004.01.014.028.036.053a.86.86 0 0 0 .27.194C7.09 4.9 7.51 5 8 5c.492 0 .912-.1 1.19-.24a.86.86 0 0 0 .271-.194.213.213 0 0 0 .039-.063v-.009a.112.112 0 0 0-.012-.025.459.459 0 0 0-.115-.118c-.375-.287-.872-.773-.872-1.469V2.5A.5.5 0 0 1 9 2h2.395a1.5 1.5 0 0 1 1.493 1.645L12.645 6.5h.237c.195 0 .42-.147.675-.48.21-.274.528-.52.943-.52.568 0 .947.447 1.154.862C15.877 6.807 16 7.387 16 8s-.123 1.193-.346 1.638c-.207.415-.586.862-1.154.862-.415 0-.733-.246-.943-.52-.255-.333-.48-.48-.675-.48h-.237l.243 2.855A1.5 1.5 0 0 1 11.395 14H9a.5.5 0 0 1-.5-.5v-.382c0-.696.497-1.182.872-1.469a.459.459 0 0 0 .115-.118.113.113 0 0 0 .012-.025L9.5 11.5v-.003a.214.214 0 0 0-.039-.064.859.859 0 0 0-.27-.193C8.91 11.1 8.49 11 8 11c-.491 0-.912.1-1.19.24a.859.859 0 0 0-.271.194.214.214 0 0 0-.039.063v.003l.001.006a.113.113 0 0 0 .012.025c.016.027.05.068.115.118.375.287.872.773.872 1.469v.382a.5.5 0 0 1-.5.5H4.605a1.5 1.5 0 0 1-1.493-1.645L3.356 9.5h-.238c-.195 0-.42.147-.675.48-.21.274-.528.52-.943.52-.568 0-.947-.447-1.154-.862C.123 9.193 0 8.613 0 8s.123-1.193.346-1.638C.553 5.947.932 5.5 1.5 5.5c.415 0 .733.246.943.52.255.333.48.48.675.48h.238l-.244-2.855zM4.605 3a.5.5 0 0 0-.498.55l.001.007.29 3.4A.5.5 0 0 1 3.9 7.5h-.782c-.696 0-1.182-.497-1.469-.872a.459.459 0 0 0-.118-.115.112.112 0 0 0-.025-.012L1.5 6.5h-.003a.213.213 0 0 0-.064.039.86.86 0 0 0-.193.27C1.1 7.09 1 7.51 1 8c0 .491.1.912.24 1.19.07.14.14.225.194.271a.213.213 0 0 0 .063.039H1.5l.006-.001a.112.112 0 0 0 .025-.012.459.459 0 0 0 .118-.115c.287-.375.773-.872 1.469-.872H3.9a.5.5 0 0 1 .498.542l-.29 3.408a.5.5 0 0 0 .497.55h1.878c-.048-.166-.195-.352-.463-.557-.274-.21-.52-.528-.52-.943 0-.568.447-.947.862-1.154C6.807 10.123 7.387 10 8 10s1.193.123 1.638.346c.415.207.862.586.862 1.154 0 .415-.246.733-.52.943-.268.205-.415.39-.463.557h1.878a.5.5 0 0 0 .498-.55l-.001-.007-.29-3.4A.5.5 0 0 1 12.1 8.5h.782c.696 0 1.182.497 1.469.872.05.065.091.099.118.115.013.008.021.01.025.012a.02.02 0 0 0 .006.001h.003a.214.214 0 0 0 .064-.039.86.86 0 0 0 .193-.27c.14-.28.24-.7.24-1.191 0-.492-.1-.912-.24-1.19a.86.86 0 0 0-.194-.271.215.215 0 0 0-.063-.039H14.5l-.006.001a.113.113 0 0 0-.025.012.459.459 0 0 0-.118.115c-.287.375-.773.872-1.469.872H12.1a.5.5 0 0 1-.498-.543l.29-3.407a.5.5 0 0 0-.497-.55H9.517c.048.166.195.352.463.557.274.21.52.528.52.943 0 .568-.447.947-.862 1.154C9.193 5.877 8.613 6 8 6s-1.193-.123-1.638-.346C5.947 5.447 5.5 5.068 5.5 4.5c0-.415.246-.733.52-.943.268-.205.415-.39.463-.557H4.605z"/>
-    </symbol>
-    <symbol id="search" viewBox="0 0 16 16">
-        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-    </symbol>
-    <symbol id="github" viewBox="0 0 16 16">
-        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
-    </symbol>
-    <symbol id="star-fill" viewBox="0 0 16 16">
-        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-    </symbol>
-    <symbol id="download" viewBox="0 0 16 16">
-        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-    </symbol>
-    <symbol id="pypi" viewBox="0 0 32 32">
-        <path d="M31.896 18.104v5.219l-4.495 1.636-0.104 0.072 0.067 0.052 4.6-1.676 0.036-0.047v-5.329l-0.073-0.047zM31.495 7.489l-4.052 1.48v5.213l4.453-1.62v-5.219zM31.896 17.943v-5.219l-4.448 1.62v5.219zM27.292 19.615v-5.213l-4.396 1.599v5.219zM22.713 26.661v-5.213l-4.416 1.604v5.219zM22.896 21.412v5.156l4.416-1.609v-5.156l-4.416 1.604zM25.683 23.917c-0.489 0.181-0.88-0.1-0.88-0.615 0-0.521 0.391-1.089 0.88-1.267 0.489-0.176 0.885 0.104 0.885 0.62 0 0.521-0.396 1.089-0.885 1.261zM17.636 12.421l0.484-0.176-4.38-1.6-4.433 1.615 0.141 0.052 4.245 1.548zM27.344 14.219v-5.219l-4.448 1.62v5.219zM22.745 15.891v-5.219l-4.401 1.604v5.213zM18.193 12.328l-4.448 1.62v5.219l4.448-1.62zM9.208 17.552l4.432 1.615v-5.219l-4.432-1.609zM13.787 10.495l4.375 1.593v-5.156l-4.375-1.593zM27.344 3.62l-4.423 1.609v5.219l4.423-1.609zM22.599 5.203l-4.301-1.563-4.36 1.589 4.303 1.563zM20.484 6.14l-2.161 0.792v5.156l4.423-1.609v-5.156zM19.964 9.844c-0.491 0.183-0.881-0.099-0.881-0.615 0-0.521 0.391-1.089 0.881-1.265 0.489-0.177 0.885 0.099 0.885 0.62 0 0.52-0.396 1.083-0.885 1.26zM13.64 24.547v-5.219l-4.432-1.615v5.219zM18.24 22.912v-5.219l-4.495 1.635v5.219zM18.344 22.869l4.396-1.599v-5.219l-4.396 1.599zM18.24 28.292l-4.495 1.635v-5.219h-0.105v5.219l-4.432-1.615v-5.219l-0.068-0.072-0.036-0.084-4.448-1.615v-5.26l0.047 0.016 4.38 1.593 0.021-0.104-4.349-1.584 4.349-1.577v-0.147l-4.344-1.583 4.344-1.584v1.167l0.104-0.072v-3.161l4.344 1.577 0.079-0.077-4.183-1.527-0.141-0.047 4.324-1.573v-0.115l-4.491 1.636v0.025l-0.036 0.027v2.025l-4.516 1.647v0.025l-0.036 0.027v5.344l-4.521 1.64v0.027l-0.031 0.025v5.323l0.031 0.052 4.537 1.652 0.011-0.011 0.009 0.016 4.532 1.651 0.011-0.011 0.009 0.016 4.532 1.645 0.021-0.011 0.015 0.011 4.599-1.672 0.037-0.052zM4.656 12.749l4.344 1.579-4.344 1.584zM4.531 26.615l-4.427-1.609v-5.219l4.427 1.609zM4.552 21.292l-4.349-1.579 4.349-1.583v3.167zM9.083 28.265l-4.427-1.609v-5.219l4.427 1.615zM31.719 7.245l-4.276-1.557v3.115zM27.183 3.527l-4.319-1.573-4.359 1.583 4.328 1.579z"/>
-    </symbol>
-    <symbol id="forum_image_sc" viewBox="0 0 24 24">
-        <path d="M13.6584 15.8117h.2543a.437.437 0 0 1 .4369.4369v3.7998a.437.437 0 0 1-.4369.4369h-3.7998a.437.437 0 0 1-.437-.4369v-.1225L6.839 21.5736v.6354c0 .6148.4984 1.1132 1.1132 1.1132h8.121c.6148 0 1.1132-.4984 1.1132-1.1132v-8.121c0-.6148-.4984-1.1132-1.1132-1.1132h-4.0561zm-.807-3.3369 2.0123-3.5311c.3044-.5341.9843-.7204 1.5184-.416l7.0557 4.021c.5341.3044.7204.9843.416 1.5184l-4.021 7.0557c-.3044.5342-.9843.7205-1.5184.416l-.6279-.3578v-3.2653l.1554.0886a.437.437 0 0 0 .5959-.1633l1.8814-3.3013a.437.437 0 0 0-.1633-.5959l-3.3013-1.8814a.437.437 0 0 0-.5959.1633l-.1444.2534zm4.9282-6.5488a.437.437 0 0 1 .5972.1584l1.9084 3.2858a.437.437 0 0 1-.1583.5972l-.1035.0601 2.8511 1.6248.5456-.3169c.5317-.3088.7123-.9901.4035-1.5217l-4.0788-7.0225c-.3088-.5316-.9901-.7123-1.5217-.4035l-7.0224 4.0788c-.5317.3088-.7123.9901-.4036 1.5217l2.037 3.5071 1.6291-2.8436-.1277-.22a.437.437 0 0 1 .1584-.5973m-4.1524.3539h-.2541a.437.437 0 0 1-.437-.4369V3.9515a.437.437 0 0 1 .437-.4369h3.7997a.437.437 0 0 1 .437.4369v.1225l2.8369-1.6478V1.791c0-.6148-.4984-1.1132-1.1132-1.1132h-8.121c-.6148 0-1.1132.4984-1.1132 1.1132v8.121c0 .6148.4984 1.1132 1.1132 1.1132h4.0561zm-2.4558 3.3328-.1444.2534a.437.437 0 0 1-.5959.1633l-3.3013-1.8814a.437.437 0 0 1-.1633-.5961L5.5623 6.159a.437.437 0 0 1 .5959-.1633l.1554.0886V2.819l-.6279-.3578c-.5342-.3044-1.214-.1182-1.5184.416L.1463 9.9329c-.3044.5342-.1182 1.214.416 1.5184l7.0557 4.021c.5342.3044 1.2139.1182 1.5184-.416l2.0123-3.531zm3.2802.9837 2.037 3.507c.3088.5317.1281 1.213-.4035 1.5218l-7.0225 4.0787c-.5316.3088-1.213.1282-1.5217-.4035L.1764 14.1864c-.3088-.5317-.1281-1.213.4035-1.5218l.5457-.3169 2.851 1.6248-.1035.0601a.437.437 0 0 0-.1584.5973l1.9084 3.2858a.437.437 0 0 0 .5972.1584l3.2858-1.9084a.437.437 0 0 0 .1584-.5973l-.1278-.22z"/>
-    </symbol>
-    <symbol id="plot" viewBox="0 0 56 56">
-        <path d="M47.533,0H8.467C3.798,0,0,3.798,0,8.467v39.066C0,52.202,3.798,56,8.467,56h39.066C52.202,56,56,52.202,56,47.533V8.467
-	C56,3.798,52.202,0,47.533,0z M54,47.533C54,51.099,51.099,54,47.533,54H8.467C4.901,54,2,51.099,2,47.533V30.414l6.247-6.247
-	C9.038,24.691,9.983,25,11,25s1.962-0.309,2.753-0.833l10.08,10.08C23.309,35.038,23,35.983,23,37c0,2.757,2.243,5,5,5s5-2.243,5-5
-	c0-1.017-0.309-1.962-0.833-2.753L46,20.414V27c0,0.553,0.447,1,1,1s1-0.447,1-1V17H38c-0.553,0-1,0.447-1,1s0.447,1,1,1h6.586
-	L30.753,32.833C29.962,32.309,29.017,32,28,32s-1.962,0.309-2.753,0.833l-10.08-10.08C15.691,21.962,16,21.017,16,20
-	c0-2.757-2.243-5-5-5s-5,2.243-5,5c0,1.017,0.309,1.962,0.833,2.753L2,27.586V8.467C2,4.901,4.901,2,8.467,2h39.066
-	C51.099,2,54,4.901,54,8.467V47.533z M11,23c-1.654,0-3-1.346-3-3s1.346-3,3-3s3,1.346,3,3S12.654,23,11,23z M31,37
-	c0,1.654-1.346,3-3,3s-3-1.346-3-3s1.346-3,3-3S31,35.346,31,37z"/>
-    </symbol>
-</svg>
-
-<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Napari</a>
-
-    <ul class="navbar-nav flex-row d-md-none">
-        <li class="nav-item text-nowrap">
-            <button class="nav-link px-3 text-white" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false"
-                    aria-label="Toggle search">
-                <svg class="bi">
-                    <use xlink:href="#search"/>
-                </svg>
-            </button>
-        </li>
-        <li class="nav-item text-nowrap">
-            <button class="nav-link px-3 text-white" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <svg class="bi">
-                    <use xlink:href="#list"/>
-                </svg>
-            </button>
-        </li>
-    </ul>
-
-    <div id="navbarSearch" class="navbar-search w-100 collapse">
-        <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><button class="dropdown-item" data-bs-theme-value="light">Light</button></li>
+              <li><button class="dropdown-item" data-bs-theme-value="dark">Dark</button></li>
+              <li><button class="dropdown-item active" data-bs-theme-value="auto">Auto</button></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
-</header>
+  </header>
 
-<div class="container-fluid">
+  <div class="container-fluid">
     <div class="row">
-        <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-            <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
-                 aria-labelledby="sidebarMenuLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="sidebarMenuLabel">{{ project }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"
-                            aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page"
-                               href="#usage">
-                                <svg class="bi">
-                                    <use xlink:href="#download"/>
-                                </svg>
-                                {{ project }} usage statistics
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page"
-                               href="#plots">
-                                <svg class="bi">
-                                    <use xlink:href="#plot"/>
-                                </svg>
-                                Plots
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-2" href="#statistics">
-                                <svg class="bi">
-                                    <use xlink:href="#github"/>
-                                </svg>
-                                Development statistics
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+      <!-- Sidebar Navigation -->
+      <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+        <div class="position-sticky pt-3">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="#usage">
+                <i class="bi bi-download"></i>
+                Usage Statistics
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#github-stats">
+                <i class="bi bi-github"></i>
+                GitHub Statistics
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#plugin-stats">
+                <i class="bi bi-puzzle"></i>
+                Plugin Statistics
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#repo-activity">
+                <i class="bi bi-graph-up"></i>
+                Repository Activity
+              </a>
+            </li>
+          </ul>
         </div>
+      </nav>
 
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <h2 id="usage">Usage</h2>
-            <h3>Basic pypi download statistics on day {{ today }}</h3>
-            <div class="table-responsive small">
-                <table class="table table-striped table-sm">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">napari</th>
-                        <th scope="col">npe2</th>
-                        <th scope="col">napari-plugin-manager</th>
-                    </tr>
-                    </thead>
-                    <tbody id="pypi_download_table">
-                    {% for key, value in pypi_downloads.items() %}
-                    <tr>
-                        <td>{{ key }}</td>
-                        <td>{{ value.napari }}</td>
-                        <td>{{ value.npe2 }}</td>
-                        <td>{{ value['napari-plugin-manager'] }}</td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+      <!-- Main Content Area -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <!-- Usage Section -->
+        <section id="usage">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>Usage</h2>
+            <p class="text-muted">Download statistics for {{ today }}.</p>
+          </div>
+          <div class="row">
+            <!-- PyPI Downloads Card -->
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  PyPI Download Statistics
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>napari</th>
+                          <th>npe2</th>
+                          <th>napari-plugin-manager</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for key, value in pypi_downloads.items() %}
+                        <tr>
+                          <td>{{ key }}</td>
+                          <td>{{ value.napari }}</td>
+                          <td>{{ value.npe2 }}</td>
+                          <td>{{ value['napari-plugin-manager'] }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3>Conda download statistics on day {{ today }}</h3>
-            <div class="table-responsive small">
-                <table class="table table-striped table-sm">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">napari</th>
-                        <th scope="col">npe2</th>
-                        <th scope="col">napari-plugin-manager</th>
-                    </tr>
-                    </thead>
-                    <tbody id="conda_download_table">
-                    {% for key, value in conda_downloads.items() %}
-                    <tr>
-                        <td>{{ key }}</td>
-                        <td>{{ value.napari }}</td>
-                        <td>{{ value.npe2 }}</td>
-                        <td>{{ value['napari-plugin-manager'] }}</td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+            <!-- Conda Downloads Card -->
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  Conda Download Statistics
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>napari</th>
+                          <th>npe2</th>
+                          <th>napari-plugin-manager</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for key, value in conda_downloads.items() %}
+                        <tr>
+                          <td>{{ key }}</td>
+                          <td>{{ value.napari }}</td>
+                          <td>{{ value.npe2 }}</td>
+                          <td>{{ value['napari-plugin-manager'] }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3>Bundled app download</h3>
-            <div class="table-responsive small">
-                <table class="table table-striped table-sm">
-                    <thead>
-                    <tr>
-                        <th scope="col">Windows</th>
-                        <th scope="col">macOS</th>
-                        <th scope="col">Linux</th>
-                    </tr>
-                    </thead>
-                    <tbody id="download_table">
-                    <tr>
-                        <td>{{ stats.bundle_download.Windows }}</td>
-                        <td>{{ stats.bundle_download.macOS }}</td>
-                        <td>{{ stats.bundle_download.Linux }}</td>
-                    </tr>
-                    </tbody>
-                </table>
+          </div>
+          <!-- Bundled App Downloads Card -->
+          <div class="card mb-4">
+            <div class="card-header">
+              Bundled App Downloads
             </div>
-
-            <h3>forum.image.sc engagement</h3>
-            There are {{ forum.topics_count }} topics on forum.image.sc with napari tag.
-            Total number of engagement user is {{ forum.users_count }}.
-            There are {{ forum.active_topics_count }} topics active since {{ base_day }}
-            that engagement {{ forum.active_users_count }} users.
-
-            <h3>Download from pypi map</h3>
-
-            <ul class="nav nav-tabs" id="map_tab" role="tablist">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Windows</th>
+                      <th>macOS</th>
+                      <th>Linux</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ stats.bundle_download.Windows }}</td>
+                      <td>{{ stats.bundle_download.macOS }}</td>
+                      <td>{{ stats.bundle_download.Linux }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- Forum Engagement Card -->
+          <div class="card mb-4">
+            <div class="card-header">
+              Forum Engagement
+            </div>
+            <div class="card-body">
+              <p>There are <strong>{{ forum.topics_count }}</strong> topics on forum.image.sc with the napari tag.</p>
+              <p>Total engagement: <strong>{{ forum.users_count }}</strong> users.</p>
+              <p><strong>{{ forum.active_topics_count }}</strong> topics active since {{ base_day }} with <strong>{{ forum.active_users_count }}</strong> users.</p>
+            </div>
+          </div>
+          <!-- Download Maps Tabs -->
+          <div class="card mb-4">
+            <div class="card-header">
+              Download Maps
+            </div>
+            <div class="card-body">
+              <ul class="nav nav-tabs" id="mapTabs" role="tablist">
                 {{ tab_header("Napari download map", "active") }}
                 {{ tab_header("High resolution napari download map") }}
                 {{ tab_header("Last 30 days download map") }}
                 {{ tab_header("High resolution last 30 days download map") }}
-            </ul>
-            <div class="tab-content" id="plots">
+              </ul>
+              <div class="tab-content mt-3">
                 {% call tab_content("Napari download map", "show active") %}
-                {{ download_map }}
+                  {{ download_map }}
                 {% endcall %}
                 {% call tab_content("High resolution napari download map") %}
-                {{ download_map_high_res }}
+                  {{ download_map_high_res }}
                 {% endcall %}
                 {% call tab_content("Last 30 days download map") %}
-                {{ download_map_last_month }}
+                  {{ download_map_last_month }}
                 {% endcall %}
                 {% call tab_content("High resolution last 30 days download map") %}
-                {{ download_map_last_month_high_res }}
+                  {{ download_map_last_month_high_res }}
                 {% endcall %}
+              </div>
             </div>
+          </div>
+        </section>
 
-            <ul class="nav nav-tabs" id="plot_tab" role="tablist">
+        <!-- GitHub Statistics Section -->
+        <section id="github-stats">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>GitHub Statistics</h2>
+          </div>
+          <!-- Activity Tabs Card -->
+          <div class="card mb-4">
+            <div class="card-header">
+              Activity Overview
+            </div>
+            <div class="card-body">
+              <ul class="nav nav-tabs" id="activityTabs" role="tablist">
                 {{ tab_header("Issue activity", "active") }}
                 {{ tab_header("Pull Request activity") }}
                 {{ tab_header("GitHub Stars") }}
                 {{ tab_header("Downloads") }}
-            </ul>
-            <div class="tab-content" id="plots">
+              </ul>
+              <div class="tab-content mt-3">
                 {% call tab_content("Issue activity", "show active") %}
-                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h1 class="h2" id="issue_plots_h">{{ project }} issues activity</h1>
-                        Cumulative activity on napari repository
-                    </div>
-                    {{ issue_activity }}
-                    {{ issue_activity2 }}
+                  <h5>{{ project }} issues activity</h5>
+                  <p>Cumulative activity on the repository.</p>
+                  {{ issue_activity }}
+                  {{ issue_activity2 }}
                 {% endcall %}
-
                 {% call tab_content("Pull Request activity") %}
-                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h1 class="h2" id="pr_plots_h">{{ project }} pull requests activity</h1>
-                        Cumulative activity on napari repository
-                    </div>
-                    {{ pr_activity_plot }}
-                    {{ pr_activity_plot2 }}
-                    {{ pr_activity_plot3 }}
-                    {{ pr_activity_plot4 }}
-                    {{ pr_activity_plot5 }}
+                  <h5>{{ project }} pull requests activity</h5>
+                  <p>Cumulative PR activity.</p>
+                  {{ pr_activity_plot }}
+                  {{ pr_activity_plot2 }}
+                  {{ pr_activity_plot3 }}
+                  {{ pr_activity_plot4 }}
+                  {{ pr_activity_plot5 }}
                 {% endcall %}
                 {% call tab_content("GitHub Stars") %}
-                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h1 class="h2" id="stars">{{ project }} github stars</h1>
-                        Number of stars on the {{ project }} repository
-                    </div>
-                    {{ stars_plot }}
+                  <h5>{{ project }} GitHub Stars</h5>
+                  <p>Current star count.</p>
+                  {{ stars_plot }}
                 {% endcall %}
                 {% call tab_content("Downloads") %}
-                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h1 class="h2" id="downloads">{{ project }} download per day</h1>
-                    </div>
-                    {{ napari_downloads_per_day }}
-                    {{ py_version }}
-                    {{ os_plot }}
-                    <h3>Daily download form conda</h3>
+                  <h5>{{ project }} Downloads per Day</h5>
+                  {{ napari_downloads_per_day }}
+                  {{ py_version }}
+                  {{ os_plot }}
+                    <h5>Daily download form conda</h5>
                     {{ napari_conda_downloads_per_day }}
                     <small>
                         Conda API only provides information about total downloads.
                         So if we have holes in data, the information is interpolated and show as straight line.
                     </small>
-                    <h3>Version downloaded from conda in last 30 days</h3>
+                    <h6>Version downloaded from conda in last 30 days</h6>
                     {{ napari_conda_version_last_month }}
                 {% endcall %}
+              </div>
             </div>
-
-
-            <h2 id="statistics">Basic GitHub statistics on day {{ today }}</h2>
-            <div class="table-responsive small">
+          </div>
+          <!-- Basic GitHub Stats Table Card -->
+          <div class="card mb-4">
+            <div class="card-header">
+              Basic GitHub Statistics ({{ today }})
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
                 <table class="table table-striped table-sm">
-                    <thead>
+                  <thead>
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Value</th>
+                      <th>Name</th>
+                      <th>Value</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>Stars</td>
-                        <td>{{ stats.stars }}</td>
-                    <tr>
-                        <td>Active contributors</td>
-                        <td>{{ stats.active_contributors }}</td>
-                    </tr>
-                    <tr>
-                        <td>Average PR per day</td>
-                        <td>{{ stats.average_pull_requests_per_day }}</td>
-                    <tr>
-                        <td>Total Pull requests</td>
-                        <td>{{ stats.total_pull_requests }}</td>
-                    </tr>
-                    <tr>
-                        <td>Merged Pull requests</td>
-                        <td>{{ stats.merged_pull_requests }}</td>
-                    </tr>
-                    <tr>
-                        <td>Pull requests closed without merge</td>
-                        <td>{{ stats.pr_closed_without_merge }}</td>
-                    </tr>
-                    <tr>
-                        <td>Open Pull requests</td>
-                        <td>{{ stats.open_pull_requests }}</td>
-                    </tr>
-                    <tr>
-                        <td>Merged Pull requests since {{ base_day }}</td>
-                        <td>{{ stats.new_merged_pull_requests }}</td>
-                    </tr>
-                    <tr>
-                        <td>Open Pull requests since {{ base_day }}</td>
-                        <td>{{ stats.new_open_pull_requests }}</td>
-                    </tr>
-                    <tr>
-                        <td>New features since {{ base_day }}</td>
-                        <td>{{ stats.labels.feature }}</td>
-                    </tr>
-                    <tr>
-                        <td>New enhancement since {{ base_day }}</td>
-                        <td>{{ stats.labels.enhancement }}</td>
-                    </tr>
-                    <tr>
-                        <td>Bug fixed since {{ base_day }}</td>
-                        <td>{{ stats.labels.bugfix }}</td>
-                    </tr>
-                    <tr>
-                        <td>Issues closed since {{ base_day }}</td>
-                        <td>{{ stats.closed_issues }}</td>
-                    </tr>
-                    <tr>
-                        <td>Issues opened since {{ base_day }}</td>
-                        <td>{{ stats.opened_issues }}</td>
-                    </tr>
-                    </tbody>
+                  </thead>
+                  <tbody>
+                    <tr><td>Stars</td><td>{{ stats.stars }}</td></tr>
+                    <tr><td>Active contributors</td><td>{{ stats.active_contributors }}</td></tr>
+                    <tr><td>Average PR per day</td><td>{{ stats.average_pull_requests_per_day }}</td></tr>
+                    <tr><td>Total PRs</td><td>{{ stats.total_pull_requests }}</td></tr>
+                    <tr><td>Merged PRs</td><td>{{ stats.merged_pull_requests }}</td></tr>
+                    <tr><td>PRs closed without merge</td><td>{{ stats.pr_closed_without_merge }}</td></tr>
+                    <tr><td>Open PRs</td><td>{{ stats.open_pull_requests }}</td></tr>
+                    <tr><td>Merged PRs since {{ base_day }}</td><td>{{ stats.new_merged_pull_requests }}</td></tr>
+                    <tr><td>Open PRs since {{ base_day }}</td><td>{{ stats.new_open_pull_requests }}</td></tr>
+                    <tr><td>New features since {{ base_day }}</td><td>{{ stats.labels.feature }}</td></tr>
+                    <tr><td>New enhancements since {{ base_day }}</td><td>{{ stats.labels.enhancement }}</td></tr>
+                    <tr><td>Bug fixes since {{ base_day }}</td><td>{{ stats.labels.bugfix }}</td></tr>
+                    <tr><td>Issues closed since {{ base_day }}</td><td>{{ stats.closed_issues }}</td></tr>
+                    <tr><td>Issues opened since {{ base_day }}</td><td>{{ stats.opened_issues }}</td></tr>
+                  </tbody>
                 </table>
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div>
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    {{ tab_header("Top PR creators", "active") }}
-                    {{ tab_header("Top PR coauthors") }}
-                    {{ tab_header("Top non-core devs PR creators") }}
-                    {{ tab_header("Top PR reviewers") }}
-                </ul>
-
-                <!-- Tab panes -->
-                <div class="tab-content" id="activity_stars">
-                    {% call tab_content("Top PR creators", "show active") %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3>All time top PR creators</h3>
-                                {{ pr_activity(stats.contributors.pr_creators, "creator") }}
-                            </div>
-                            <div class="col-md-6">
-                                <h3>PR creators since {{ base_day }}</h3>
-                                {{ pr_activity(stats.contributors.pr_creators_since, "creator") }}
-                            </div>
-                        </div>
-                    {% endcall %}
-                    {% call tab_content("Top PR coauthors") %}
-                        PR coauthor is a person who do not open the PR but contributed to the PR by code.
-                         <div class="row">
-                            <div class="col-md-6">
-                                <h3>All time top PR coauthors</h3>
-                                {{ pr_activity(stats.contributors.pr_coauthors, "coauthor") }}
-                            </div>
-                            <div class="col-md-6">
-                                <h3>PR coauthors since {{ base_day }}</h3>
-                                {{ pr_activity(stats.contributors.pr_coauthors_since, "coauthor") }}
-                            </div>
-                        </div>
-                    {% endcall %}
-                    {% call tab_content("Top non-core devs PR creators") %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3>All time top non core devs PR creators</h3>
-                                {{ pr_activity(stats.contributors.pr_creators_non_core, "creator") }}
-                            </div>
-                            <div class="col-md-6">
-                                <h3>PR non core-devs creators since {{ base_day }}</h3>
-                                {{ pr_activity(stats.contributors.pr_creators_non_core_since, "creator") }}
-                            </div>
-                        </div>
-                    {% endcall %}
-                    {% call tab_content("Top PR reviewers") %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3>All time top PR reviewers</h3>
-                                {{ pr_activity(stats.contributors.pr_reviewers, "reviewer") }}
-                            </div>
-                            <div class="col-md-6">
-                                <h3>PR reviewers since {{ base_day }}</h3>
-                                {{ pr_activity(stats.contributors.pr_reviewers_since, "reviewer") }}
-                            </div>
-                        </div>
-                    {% endcall %}
-                </div>
+        <!-- Contributor Activity Section -->
+        <section id="contributors">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>Contributor Activity</h2>
+          </div>
+          <div class="card mb-4">
+            <div class="card-header">
+              Top Contributor Metrics
             </div>
+            <div class="card-body">
+              <ul class="nav nav-tabs" id="contributorTabs" role="tablist">
+                {{ tab_header("Top PR creators", "active") }}
+                {{ tab_header("Top PR coauthors") }}
+                {{ tab_header("Top non-core devs PR creators") }}
+                {{ tab_header("Top PR reviewers") }}
+              </ul>
+              <div class="tab-content mt-3">
+                {% call tab_content("Top PR creators", "show active") %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5>All Time</h5>
+                      {{ pr_activity(stats.contributors.pr_creators, "creator") }}
+                    </div>
+                    <div class="col-md-6">
+                      <h5>Since {{ base_day }}</h5>
+                      {{ pr_activity(stats.contributors.pr_creators_since, "creator") }}
+                    </div>
+                  </div>
+                {% endcall %}
+                {% call tab_content("Top PR coauthors") %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5>All Time</h5>
+                      {{ pr_activity(stats.contributors.pr_coauthors, "coauthor") }}
+                    </div>
+                    <div class="col-md-6">
+                      <h5>Since {{ base_day }}</h5>
+                      {{ pr_activity(stats.contributors.pr_coauthors_since, "coauthor") }}
+                    </div>
+                  </div>
+                {% endcall %}
+                {% call tab_content("Top non-core devs PR creators") %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5>All Time</h5>
+                      {{ pr_activity(stats.contributors.pr_creators_non_core, "creator") }}
+                    </div>
+                    <div class="col-md-6">
+                      <h5>Since {{ base_day }}</h5>
+                      {{ pr_activity(stats.contributors.pr_creators_non_core_since, "creator") }}
+                    </div>
+                  </div>
+                {% endcall %}
+                {% call tab_content("Top PR reviewers") %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5>All Time</h5>
+                      {{ pr_activity(stats.contributors.pr_reviewers, "reviewer") }}
+                    </div>
+                    <div class="col-md-6">
+                      <h5>Since {{ base_day }}</h5>
+                      {{ pr_activity(stats.contributors.pr_reviewers_since, "reviewer") }}
+                    </div>
+                  </div>
+                {% endcall %}
+              </div>
+            </div>
+          </div>
+        </section>
 
-
-            <h2>Plugin statistics</h2>
-            <div class="table-responsive small">
+        <!-- Plugin Statistics Section -->
+        <section id="plugin-stats">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>Plugin Statistics</h2>
+          </div>
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="table-responsive">
                 <table class="table table-striped table-sm">
-                    <thead>
+                  <thead>
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Value</th>
+                      <th>Name</th>
+                      <th>Value</th>
                     </tr>
-                    </thead>
-                    <tbody>
+                  </thead>
+                  <tbody>
                     <tr>
-                        <td>Plugin count</td>
-                        <td>{{ plugins.count }}</td>
-                    </tr>
-                    <tr>
-                        <td>Total number of downloads of plugins from pypi</td>
-                        <td>{{ plugins.all_plugin_downloads_from_pypi }}</td>
+                      <td>Plugin count</td>
+                      <td>{{ plugins.count }}</td>
                     </tr>
                     <tr>
-                        <td>Total number of downloads of plugins from conda</td>
-                        <td>{{ plugins.all_plugin_downloads_from_conda }}</td>
+                      <td>Total plugin downloads (PyPI)</td>
+                      <td>{{ plugins.all_plugin_downloads_from_pypi }}</td>
                     </tr>
                     <tr>
-                        <td>Number of plugins above 1500 downloads in last month</td>
-                        <td>{{ plugins.active }}</td>
+                      <td>Total plugin downloads (Conda)</td>
+                      <td>{{ plugins.all_plugin_downloads_from_conda }}</td>
                     </tr>
                     <tr>
-                        <td>Number of actively developed plugins (release since {{ base_day }})</td>
-                        <td>{{ plugins.under_active_development }}</td>
+                      <td>Plugins above 1500 downloads (last month)</td>
+                      <td>{{ plugins.active }}</td>
                     </tr>
-                    </tbody>
+                    <tr>
+                      <td>Actively developed plugins (since {{ base_day }})</td>
+                      <td>{{ plugins.under_active_development }}</td>
+                    </tr>
+                  </tbody>
                 </table>
+              </div>
+              <p class="small text-muted">
+                Plugins with more than 1500 downloads last month are considered actively used.
+                Excluded: {% for name in plugins.skip %}<code>{{ name }}</code>{% if not loop.last %}, {% endif %}{% endfor %}
+              </p>
             </div>
-            <p><small>Plugins with more than 1500 downloads in last month are considered as actively used plugins.</small></p>
-            <p><small>Plugins {% for name in plugins.skip %} <code>{{ name }}</code>{% if not loop.last %},{% endif %} {% endfor %} were exclude from this analysis.</small></p>
+          </div>
+        </section>
 
-            <h2>Repository activity since {{ last_week_range[0].date() }} to {{ last_week_range[1].date() }}</h2>
-            {% for key, value in last_week_summary.items() %}
-            <h3>{{ key }}</h3>
-            <ul>
+        <!-- Repository Activity Section -->
+        <section id="repo-activity">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>Repository Activity</h2>
+            <p class="text-muted">From {{ last_week_range[0].date() }} to {{ last_week_range[1].date() }}</p>
+          </div>
+          {% for key, value in last_week_summary.items() %}
+          <div class="card mb-3">
+            <div class="card-header">
+              {{ key }}
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled mb-0">
                 {% for v in value %}
-                <li>{{ v.book }} <a href="{{ v.url }}">{{ v.identifier }}</a> {{ v.title }} <i>by</i> {{ v.user }} </li>
+                <li>
+                  <strong>{{ v.book }}</strong>
+                  <a href="{{ v.url }}">{{ v.identifier }}</a> {{ v.title }} <em>by</em> {{ v.user }}
+                </li>
                 {% endfor %}
-            </ul>
-            {% endfor %}
-
-            <div>
-                Source data for this statistics is available <a href="https://drive.google.com/file/d/1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw/view?usp=drive_link">here</a>
+              </ul>
             </div>
-        </main>
+          </div>
+          {% endfor %}
+          <div class="mb-4">
+            <small>Source data available <a href="https://drive.google.com/file/d/1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw/view?usp=drive_link">here</a>.</small>
+          </div>
+        </section>
+      </main>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-<script>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Trigger resize for responsive components/charts
     document.addEventListener("click", function(){
-    window.dispatchEvent(new Event('resize'));
+      window.dispatchEvent(new Event('resize'));
+    });
+  </script>
+<script>
+  function setTheme(theme) {
+    // Handle 'auto' mode by checking system preference
+    if (theme === 'auto') {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+      }
+    } else {
+      document.documentElement.setAttribute('data-bs-theme', theme);
+    }
+    // Save the selected theme in localStorage
+    localStorage.setItem('theme', theme);
+  }
+  // On page load, retrieve and set the saved theme (or default to 'auto')
+  document.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem('theme') || 'auto';
+    setTheme(savedTheme);
   });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var scrollSpy = new bootstrap.ScrollSpy(document.body, {
+      target: '.sidebar',
+      offset: 100
+    });
+  });
+
+  document.querySelectorAll('[data-bs-theme-value]').forEach(button => {
+  button.addEventListener('click', (e) => {
+    const theme = e.currentTarget.getAttribute('data-bs-theme-value');
+    setTheme(theme);
+
+    // Optionally update button active state:
+    document.querySelectorAll('[data-bs-theme-value]').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    e.currentTarget.classList.add('active');
+  });
+});
 </script>
 
 </body>
