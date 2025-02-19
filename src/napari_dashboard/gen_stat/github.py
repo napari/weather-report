@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 
 
 CORE_DEVS = {
-    "andy-sweet",
+    "aganders3",
     "DragaDoncila",
     "GenevieveBuckley",
     "Czaki",
