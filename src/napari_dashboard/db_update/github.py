@@ -47,7 +47,7 @@ PR_COMMITS_HEADER = {
 def get_commits(pr: GHPullRequest):
     commits_json = []
     i = 1
-    while i < int(math.ceil(pr.commits / 100)) + 1:
+    while i < math.ceil(pr.commits / 100) + 1:
         resp = requests.get(
             f"{pr.commits_url}?page={i}&per_page=100",
             headers=PR_COMMITS_HEADER,
