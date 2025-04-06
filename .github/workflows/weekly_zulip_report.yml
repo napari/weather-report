@@ -40,7 +40,7 @@ jobs:
 
       - name: Build the dashboard
         run: |
-          uv run traceback-with-variables napari_dashboard.get_weekly_summary --send-zulip --channel ${{ (github.event_name == 'schedule') && 'core-devs' || '"metrics and analytics"' }}
+          uv run traceback-with-variables napari_dashboard.get_weekly_summary --send-zulip --channel ${{ (github.event_name == 'schedule') && 'developer-updates' || '"metrics and analytics"' }}
         env:
           PEPY_KEY: ${{ secrets.PEPY_KEY }}
           GH_TOKEN_: ${{ secrets.GITHUB_TOKEN }}
