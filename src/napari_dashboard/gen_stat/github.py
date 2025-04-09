@@ -31,26 +31,19 @@ if TYPE_CHECKING:
 
 CORE_DEVS = {
     "aganders3",
+    "brisvag",
+    "Czaki",
     "DragaDoncila",
     "GenevieveBuckley",
-    "Czaki",
     "jni",
+    "kephale",
     "kevinyamauchi",
     "kne42",
-    "kephale",
-    "brisvag",
+    "lucyleeow",
     "melissawm",
     "melonora",
     "psobolewskiPhD",
-    "AhmetCanSolak",
-    "alisterburt",
-    "justinelarsen",
-    "royerloic",
-    "sofroniewn",
-    "shanaxel42",
-    "tlambert03",
-    "potating-potato",
-    "lucyleeow",
+    "TimMonko",
 }
 
 
