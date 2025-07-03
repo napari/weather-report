@@ -95,10 +95,16 @@ def build_new_projects_query(engine: Engine) -> str:
 
 
 def _save_pepy_download_stat(session: Session, package: str):
-    pepy = requests.get(
+    res = requests.get(
         f"https://pepy.tech/api/v2/projects/{package}",
         headers={"X-Api-Key": os.environ["PEPY_KEY"]},
-    ).json()
+    )
+    if res.status_code == 429:
+        logging.warning("Too many requests for %s, waiting", package)
+        sleep(30) if "CI" in os.environ else sleep(1)
+        _save_pepy_download_stat(session, package)
+        return
+    pepy = res.json()
     if "total_downloads" not in pepy:
         logging.warning(
             "Error fetching pepy info for %s with message %s",
