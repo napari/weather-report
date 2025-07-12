@@ -1,4 +1,5 @@
 import datetime
+import time
 
 import requests
 import tqdm
@@ -41,12 +42,19 @@ def save_forum_info(session: Session):
     with tqdm.tqdm(desc="Fetching forum information") as pbar:
         while True:
             pbar.update(1)
-            topics = requests.get(
+            topics_res = requests.get(
                 f"https://forum.image.sc/tag/napari/l/latest.json?page={index}",
                 headers={
                     "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0"
                 },
-            ).json()
+            )
+            if topics_res.status_code == 429:
+                pbar.write(
+                    "Rate limit exceeded. Waiting for 60 seconds before retrying."
+                )
+                time.sleep(60)
+                continue
+            topics = topics_res.json()
             index += 1
             if not topics["topic_list"]["topics"]:
                 break
