@@ -44,6 +44,7 @@ CORE_DEVS = {
     "melonora",
     "psobolewskiPhD",
     "TimMonko",
+    "willingc",
 }
 
 
