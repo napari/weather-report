@@ -21,11 +21,15 @@ def main(args: None | list[str] = None):
         default=Path(DB_PATH),
         nargs="?",
     )
+    parser.add_argument(
+        "--no-fetch", action="store_true", help="Do not fetch the database"
+    )
     args = parser.parse_args(args)
     logging.basicConfig(level=logging.INFO)
-
-    fetch_database(args.db_path)
-    logging.info("Database fetched.")
+    if not args.no_fetch:
+        logging.info("Fetching database...")
+        fetch_database(args.db_path)
+        logging.info("Database fetched.")
     get_webpage_main(["webpage", str(args.db_path), "--no-excel-dump"])
 
 

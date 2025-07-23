@@ -1,0 +1,67 @@
+name: test_on_pr.yml
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  generate_report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Download and unpack the database
+        run: |
+          gdown https://drive.google.com/file/d/1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw/view?usp=drive_link
+          bunzip dashboard.db.bz2
+
+      - name: Build the dashboard
+        run: |
+          uv run traceback-with-variables napari_dashboard.get_weekly_summary --no-fetch
+
+  generate_webpage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    permissions:
+      contents: 'write'
+      id-token: 'write'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Download and unpack the database
+        run: |
+          gdown https://drive.google.com/file/d/1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw/view?usp=drive_link
+          bunzip dashboard.db.bz2
+
+      - name: Build the dashboard
+        run: |
+          uv run traceback-with-variables napari_dashboard.webpage_update
