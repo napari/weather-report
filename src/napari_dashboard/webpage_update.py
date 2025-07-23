@@ -14,6 +14,7 @@ from napari_dashboard.get_webpage.__main__ import main as get_webpage_main
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+
 def main(args: None | list[str] = None):
     parser = argparse.ArgumentParser()
     parser.add_argument(

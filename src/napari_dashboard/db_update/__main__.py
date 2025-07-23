@@ -32,6 +32,7 @@ if typing.TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+
 def check_if_recently_updated(session: Session) -> bool:
     twelve_hours_ago = datetime.datetime.now() - datetime.timedelta(hours=12)
     last_update = (

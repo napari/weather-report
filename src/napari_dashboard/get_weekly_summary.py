@@ -21,6 +21,7 @@ from napari_dashboard.gen_stat.github import (
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+
 def generate_weekly_summary(fetch_db: bool) -> list[str]:
     """
     Generate Markdown for the weekly summary.
