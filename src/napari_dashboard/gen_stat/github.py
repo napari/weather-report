@@ -700,10 +700,9 @@ def get_last_week_updated_pr(session: Session) -> Iterable[PullRequests]:
                 ),
             )
         )
-        .all()
+        .yield_per(5)
     )
-    logging.info("Found %d updated PRs", len(res))
-    return res
+    yield from res
 
 
 def get_last_week_updated_pr_md(session: Session) -> list[str]:
