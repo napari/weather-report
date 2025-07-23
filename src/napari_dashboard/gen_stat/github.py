@@ -676,7 +676,7 @@ def get_last_week_updated_pr(session: Session) -> Iterable[PullRequests]:
     """Get PR updated in last week, but open before last week and not closed"""
     start, stop = get_last_week()
     logging.info("Fetching updated PRs from the last week")
-    return (
+    res = (
         session.query(PullRequests)
         .filter(
             PullRequests.open_time < start, PullRequests.close_time.is_(null())
@@ -702,6 +702,8 @@ def get_last_week_updated_pr(session: Session) -> Iterable[PullRequests]:
         )
         .all()
     )
+    logging.info("Found %d updated PRs", len(res))
+    return res
 
 
 def get_last_week_updated_pr_md(session: Session) -> list[str]:
