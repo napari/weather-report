@@ -33,24 +33,31 @@ def generate_weekly_summary(fetch_db: bool) -> list[str]:
     res = [f"# Weekly Summary {start.date()}-{end.date()}\n"]
     logging.info("Database connected")
     with Session(engine) as session:
+        logging.info("Fetch PR")
         if new_pr := get_last_week_new_pr_md(session):
             res.append("## New Pull Requests\n")
             res.extend(f" - {text}" for text in new_pr)
+        logging.info("Fetch updated PR")
         if updated_pr := get_last_week_updated_pr_md(session):
             res.append("\n## Updated Pull Requests (state unchanged)\n")
             res.extend(f" - {text}" for text in updated_pr)
+        logging.info("Fetch merged PR")
         if merged_pr := get_last_week_merged_pr_md(session):
             res.append("\n## Merged Pull Requests\n")
             res.extend(f" - {text}" for text in merged_pr)
+        logging.info("Fetch closed PR")
         if closed_pr := get_last_week_closed_pr_md(session):
             res.append("\n## Closed Pull Requests (unmerged)\n")
             res.extend(f" - {text}" for text in closed_pr)
+        logging.info("Fetch issues")
         if new_issue := get_last_week_new_issues_md(session):
             res.append("\n## New Issues\n")
             res.extend(f" - {text}" for text in new_issue)
+        logging.info("Fetch updated issues")
         if updated_issue := get_last_week_updated_issues_md(session):
             res.append("\n## Updated Issues (state unchanged)\n")
             res.extend(f" - {text}" for text in updated_issue)
+        logging.info("Fetch closed issues")
         if closed_issues := get_last_week_closed_issues_as_md(session):
             res.append("\n## Closed Issues\n")
             res.extend(f" - {text}" for text in closed_issues)
@@ -79,6 +86,7 @@ def main():
 
     message = generate_weekly_summary(not args.no_fetch)
     if args.send_zulip:
+        logging.info("Sending message to Zulip")
         import zulip
 
         client = zulip.Client(

@@ -1,4 +1,5 @@
 import datetime
+import logging
 import math
 from pathlib import Path
 
@@ -427,6 +428,7 @@ def generate_webpage(
     target_path.mkdir(parents=True, exist_ok=True)
     print(f"target path {target_path.absolute()}")
     print(f"db path {db_path.absolute()}, sqlite://{db_path.absolute()}")
+    logging.info("Connecting to database {)}", db_path.absolute())
     engine = create_engine(f"sqlite:///{db_path.absolute()}")
     setup_cache(timeout=60 * 60 * 4)
 
@@ -489,6 +491,7 @@ def generate_webpage(
             "napari",
             datetime.date.today() - datetime.timedelta(days=30),
         )
+    logging.info("Data loaded from database")
 
     # Data to be rendered
     data = {
