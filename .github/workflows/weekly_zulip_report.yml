@@ -38,7 +38,7 @@ jobs:
         run: |
           uv sync
 
-      - name: Build the dashboard
+      - name: Generate weekly summary
         run: |
           uv run traceback-with-variables napari_dashboard.get_weekly_summary --send-zulip --channel ${{ (github.event_name == 'schedule') && 'developer-updates' || '"metrics and analytics"' }}
         env:

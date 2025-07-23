@@ -31,7 +31,7 @@ jobs:
           uv run gdown https://drive.google.com/uc?id=1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw
           bzip2 -dk dashboard.db.bz2
 
-      - name: Build the dashboard
+      - name: Generate weekly summary
         run: |
           uv run traceback-with-variables napari_dashboard.get_weekly_summary --no-fetch
 
