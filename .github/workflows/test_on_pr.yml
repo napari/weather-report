@@ -61,6 +61,7 @@ jobs:
         run: |
           uv run gdown https://drive.google.com/uc?id=1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw
           bzip2 -dk dashboard.db.bz2
+          ls
 
       - name: Build the dashboard
         run: |
