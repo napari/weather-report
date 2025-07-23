@@ -700,6 +700,7 @@ def get_last_week_updated_pr(session: Session) -> Iterable[PullRequests]:
                 ),
             )
         )
+        .distinct()
         .yield_per(5)
     )
     yield from res
