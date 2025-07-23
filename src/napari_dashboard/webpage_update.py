@@ -5,6 +5,7 @@ Module to update the webpage with the latest data from the database.
 from __future__ import annotations
 
 import argparse
+import logging
 from pathlib import Path
 
 from napari_dashboard.gdrive_util import DB_PATH, fetch_database
@@ -21,6 +22,7 @@ def main(args: None | list[str] = None):
         nargs="?",
     )
     args = parser.parse_args(args)
+    logging.basicConfig(level=logging.INFO)
 
     fetch_database(args.db_path)
     print("Database fetched.")
