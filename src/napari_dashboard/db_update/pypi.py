@@ -31,6 +31,8 @@ if typing.TYPE_CHECKING:
 
 START_DATE = "2018-01-01"
 
+logger = logging.getLogger(__name__)
+
 
 class PackageNotFound(Exception):
     pass
@@ -100,13 +102,13 @@ def _save_pepy_download_stat(session: Session, package: str):
         headers={"X-Api-Key": os.environ["PEPY_KEY"]},
     )
     if res.status_code == 429:
-        logging.warning("Too many requests for %s, waiting", package)
+        logger.warning("Too many requests for %s, waiting", package)
         sleep(30) if "CI" in os.environ else sleep(1)
         _save_pepy_download_stat(session, package)
         return
     pepy = res.json()
     if "total_downloads" not in pepy:
-        logging.warning(
+        logger.warning(
             "Error fetching pepy info for %s with message %s",
             package,
             pepy["message"],
@@ -188,7 +190,7 @@ def _save_pypi_download_information(session: Session, package: str):
             f"https://pypistats.org/api/packages/{package}/system"
         )
     except PackageNotFound:
-        logging.warning("Package %s not found", package)
+        logger.warning("Package %s not found", package)
         return
 
     for el in overall["data"]:

@@ -29,6 +29,9 @@ from napari_dashboard.db_update.util import setup_cache
 if typing.TYPE_CHECKING:
     from collections.abc import Sequence
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
 
 def check_if_recently_updated(session: Session) -> bool:
     twelve_hours_ago = datetime.datetime.now() - datetime.timedelta(hours=12)
@@ -64,14 +67,13 @@ def main(args: Sequence[str] | None = None) -> bool:
     args = parser.parse_args(args)
 
     setup_cache()
-    logging.basicConfig(level=logging.INFO)
 
     engine = create_engine(f"sqlite:///{args.db_path.absolute()}")
     Base.metadata.create_all(engine)
 
     with Session(engine) as session:
         if check_if_recently_updated(session):
-            logging.info("Database was recently updated, skipping update")
+            logger.info("Database was recently updated, skipping update")
             return False
         update_github(session)
         save_forum_info(session)

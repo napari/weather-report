@@ -11,9 +11,11 @@ from pydrive2.drive import GoogleDrive, GoogleDriveFile
 COMPRESSED_DB = "dashboard.db.bz2"
 DB_PATH = "dashboard.db"
 
+logger = logging.getLogger(__name__)
+
 
 def login_with_local_webserver():
-    logging.info("Using local webserver")
+    logger.info("Using local webserver")
 
     gauth = GoogleAuth()
     # Try to load saved client credentials
@@ -43,7 +45,7 @@ def login_with_service_account() -> GoogleAuth:
     # Define the settings dict to use a service account
     # We also can use all options available for the settings dict like
     # oauth_scope,save_credentials,etc.
-    logging.info("Using service account")
+    logger.info("Using service account")
     settings = {
         "client_config_backend": "service",
         "service_config": {"client_json_file_path": "service-secrets.json"},
@@ -139,7 +141,7 @@ def uncompressed_file(compressed_file_path, original_file_path):
 
 def fetch_database(db_path=DB_PATH):
     """Fetch the database from Google Drive."""
-    logging.info("fetching database")
+    logger.info("fetching database")
 
     db_path = Path(db_path)
     archive_path = db_path.with_suffix(".db.bz2")
@@ -150,18 +152,18 @@ def fetch_database(db_path=DB_PATH):
             archive_path.exists()
             and calculate_md5(archive_path) == db_file["md5Checksum"]
         ):
-            logging.info("download database")
+            logger.info("download database")
 
             db_file.GetContentFile(str(archive_path))
-            logging.info("uncompressing database")
+            logger.info("uncompressing database")
             uncompressed_file(archive_path, db_path)
-            logging.info("migrate database")
+            logger.info("migrate database")
             # call alembic upgrade
             import subprocess
 
-            logging.info("Running alembic upgrade via subprocess...")
+            logger.info("Running alembic upgrade via subprocess...")
             subprocess.run(["alembic", "upgrade", "head"], check=True)
-            logging.info("Subprocess finished")
+            logger.info("Subprocess finished")
 
     else:
-        logging.info("Database not found")
+        logger.info("Database not found")

@@ -52,6 +52,8 @@ LABELS = [
     "maintenance",
 ]
 
+logger = logging.getLogger(__name__)
+
 
 def get_plugin_count():
     return len(requests_get("https://api.napari.org/api/plugins").json())
@@ -428,7 +430,7 @@ def generate_webpage(
     target_path.mkdir(parents=True, exist_ok=True)
     print(f"target path {target_path.absolute()}")
     print(f"db path {db_path.absolute()}, sqlite://{db_path.absolute()}")
-    logging.info("Connecting to database %s", db_path.absolute())
+    logger.info("Connecting to database %s", db_path.absolute())
     engine = create_engine(f"sqlite:///{db_path.absolute()}")
     setup_cache(timeout=60 * 60 * 4)
 
@@ -437,22 +439,22 @@ def generate_webpage(
     valid_plugins = {x for x in plugins if x not in skip_plugins}
 
     with Session(engine) as session:
-        logging.info("Getting basic statistics from database")
+        logger.info("Getting basic statistics from database")
         stats = generate_basic_stats(
             "napari", "napari", session, since_date, LABELS
         )
-        logging.info("Calculating stars per day")
+        logger.info("Calculating stars per day")
         stars = calc_stars_per_day_cumulative("napari", "napari", session)
         stats["stars"] = stars["stars"][-1]
-        logging.info("Calculating topics per day")
+        logger.info("Calculating topics per day")
         stats["contributors"] = generate_contributors_stats(
             [("napari", "napari"), ("napari", "docs"), ("napari", "npe2")],
             session,
             since_date,
         )
-        logging.info("forum.imagesc.org topics count")
+        logger.info("forum.imagesc.org topics count")
         forums_stats = get_topics_count(since_date, session)
-        logging.info("package download statistics")
+        logger.info("package download statistics")
         pypi_download_info = get_download_info(
             session, ["napari", "npe2", "napari-plugin-manager"]
         )
@@ -463,7 +465,7 @@ def generate_webpage(
             get_last_month_version_downloads_per_version(session, "napari")
         )
         napari_downloads_per_day = get_pypi_download_per_day(session, "napari")
-        logging.info("plugin download statistics")
+        logger.info("plugin download statistics")
         active_plugin_stats = get_active_packages(
             session, packages=valid_plugins, threshold=1500
         )
@@ -497,7 +499,7 @@ def generate_webpage(
             "napari",
             datetime.date.today() - datetime.timedelta(days=30),
         )
-    logging.info("Data loaded from database")
+    logger.info("Data loaded from database")
 
     # Data to be rendered
     data = {

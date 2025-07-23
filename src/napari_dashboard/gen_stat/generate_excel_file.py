@@ -11,6 +11,8 @@ from sqlalchemy.orm import Session
 
 from napari_dashboard.db_schema import base
 
+logger = logging.getLogger(__name__)
+
 
 def generate_excel_file(file_path: Union[str, Path], session: Session):
     with pd.ExcelWriter(file_path) as writer:
@@ -21,4 +23,4 @@ def generate_excel_file(file_path: Union[str, Path], session: Session):
                 df = pd.read_sql_table(table.name, session.bind)
                 df.to_excel(writer, sheet_name=table.name[:31], index=False)
             except ValueError:
-                logging.exception("Error while reading table %s", table.name)
+                logger.exception("Error while reading table %s", table.name)
