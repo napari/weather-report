@@ -8,7 +8,7 @@ on:
 jobs:
   generate_report:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
 
   generate_webpage:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 20
     permissions:
       contents: 'write'
       id-token: 'write'
