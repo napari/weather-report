@@ -25,7 +25,7 @@ def main(args: None | list[str] = None):
     logging.basicConfig(level=logging.INFO)
 
     fetch_database(args.db_path)
-    print("Database fetched.")
+    logging.info("Database fetched.")
     get_webpage_main(["webpage", str(args.db_path), "--no-excel-dump"])
 
 
