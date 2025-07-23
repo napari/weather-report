@@ -674,7 +674,7 @@ def get_last_week_new_pr_md(session: Session) -> list[str]:
 def get_last_week_updated_pr(session: Session) -> Iterable[PullRequests]:
     """Get PR updated in last week, but open before last week and not closed"""
     start, stop = get_last_week()
-    return (
+    res = (
         session.query(PullRequests)
         .filter(
             PullRequests.open_time < start, PullRequests.close_time.is_(null())
@@ -698,8 +698,10 @@ def get_last_week_updated_pr(session: Session) -> Iterable[PullRequests]:
                 ),
             )
         )
-        .all()
+        .distinct()
+        .yield_per(5)
     )
+    yield from res
 
 
 def get_last_week_updated_pr_md(session: Session) -> list[str]:
