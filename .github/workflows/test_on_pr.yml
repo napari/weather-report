@@ -28,7 +28,7 @@ jobs:
 
       - name: Download and unpack the database
         run: |
-          gdown https://drive.google.com/file/d/1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw/view?usp=drive_link
+          uv run gdown https://drive.google.com/file/d/1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw/view?usp=drive_link
           bunzip dashboard.db.bz2
 
       - name: Build the dashboard
@@ -59,7 +59,7 @@ jobs:
 
       - name: Download and unpack the database
         run: |
-          gdown https://drive.google.com/file/d/1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw/view?usp=drive_link
+          uv run gdown https://drive.google.com/file/d/1ZLkYVueEgg2E3Y50KUuBEg_f5YpFejnw/view?usp=drive_link
           bunzip dashboard.db.bz2
 
       - name: Build the dashboard
