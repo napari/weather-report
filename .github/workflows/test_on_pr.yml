@@ -1,4 +1,4 @@
-name: test_on_pr.yml
+name: Test on PR
 on:
   pull_request:
     branches:
