@@ -44,7 +44,7 @@ dependencies = [
     "zulip",
     "traceback_with_variables",
     "alembic>=1.14.0",
-    "gdown>=5.2.0",
+    "gdown>=5.2.0", # required for PR tests to download public data from gdrive without authentication
 ]
 
 [project.urls]
