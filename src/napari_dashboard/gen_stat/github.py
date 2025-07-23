@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import itertools
+import logging
 from functools import lru_cache
 from typing import TYPE_CHECKING, Callable
 
@@ -674,6 +675,7 @@ def get_last_week_new_pr_md(session: Session) -> list[str]:
 def get_last_week_updated_pr(session: Session) -> Iterable[PullRequests]:
     """Get PR updated in last week, but open before last week and not closed"""
     start, stop = get_last_week()
+    logging.info("Fetching updated PRs from the last week")
     return (
         session.query(PullRequests)
         .filter(
