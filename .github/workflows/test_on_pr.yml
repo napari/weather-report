@@ -66,3 +66,9 @@ jobs:
       - name: Build the dashboard
         run: |
           uv run traceback-with-variables napari_dashboard.webpage_update --no-fetch
+
+      - name: Upload webpage
+        uses: actions/upload-artifact@v4
+        with:
+          name: napari-dashboard-webpage
+          path: webpage
