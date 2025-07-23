@@ -28,8 +28,10 @@ def generate_weekly_summary(fetch_db: bool) -> list[str]:
     logging.basicConfig(level=logging.INFO)
     if fetch_db:
         fetch_database()
+    logging.info("Generating weekly summary")
     engine = create_engine("sqlite:///dashboard.db")
     res = [f"# Weekly Summary {start.date()}-{end.date()}\n"]
+    logging.info("Database connected")
     with Session(engine) as session:
         if new_pr := get_last_week_new_pr_md(session):
             res.append("## New Pull Requests\n")
@@ -55,6 +57,8 @@ def generate_weekly_summary(fetch_db: bool) -> list[str]:
 
         res.append("\n## Core-devs active in repositories\n")
         res.append(", ".join(get_last_week_active_core_devs(session)))
+
+    logging.info("Summary generated")
 
     return res
 
