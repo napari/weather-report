@@ -641,7 +641,6 @@ source = { editable = "." }
 dependencies = [
     { name = "alembic" },
     { name = "db-dtypes" },
-    { name = "gdown" },
     { name = "google-cloud-bigquery" },
     { name = "google-cloud-bigquery-storage" },
     { name = "humanize" },
@@ -659,11 +658,18 @@ dependencies = [
     { name = "zulip" },
 ]
 
+[package.dev-dependencies]
+ci = [
+    { name = "gdown" },
+]
+ci-test = [
+    { name = "gdown" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "alembic", specifier = ">=1.14.0" },
     { name = "db-dtypes" },
-    { name = "gdown", specifier = ">=5.2.0" },
     { name = "google-cloud-bigquery" },
     { name = "google-cloud-bigquery-storage" },
     { name = "humanize" },
@@ -680,6 +686,10 @@ requires-dist = [
     { name = "xlsxwriter" },
     { name = "zulip" },
 ]
+
+[package.metadata.requires-dev]
+ci = [{ name = "gdown", specifier = ">=5.2.0" }]
+ci-test = [{ name = "gdown", specifier = ">=5.2.0" }]
 
 [[package]]
 name = "narwhals"
