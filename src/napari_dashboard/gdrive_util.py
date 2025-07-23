@@ -157,9 +157,11 @@ def fetch_database(db_path=DB_PATH):
             uncompressed_file(archive_path, db_path)
             logging.info("migrate database")
             # call alembic upgrade
-            from alembic.config import main
+            import subprocess
 
-            main(["upgrade", "head"], prog="alembic")
+            logging.info("Running alembic upgrade via subprocess...")
+            subprocess.run(["alembic", "upgrade", "head"], check=True)
+            logging.info("Subprocess finished")
 
     else:
         logging.info("Database not found")
