@@ -10,7 +10,7 @@ name = "napari-dashboard"
 dynamic = ["version"]
 description = 'Dashboard'
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = "MIT"
 keywords = []
 authors = [
