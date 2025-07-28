@@ -11,6 +11,9 @@ from pathlib import Path
 from napari_dashboard.gdrive_util import DB_PATH, fetch_database
 from napari_dashboard.get_webpage.__main__ import main as get_webpage_main
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
 
 def main(args: None | list[str] = None):
     parser = argparse.ArgumentParser()
@@ -25,11 +28,11 @@ def main(args: None | list[str] = None):
         "--no-fetch", action="store_true", help="Do not fetch the database"
     )
     args = parser.parse_args(args)
-    logging.basicConfig(level=logging.INFO)
+
     if not args.no_fetch:
-        logging.info("Fetching database...")
+        logger.info("Fetching database...")
         fetch_database(args.db_path)
-        logging.info("Database fetched.")
+        logger.info("Database fetched.")
     get_webpage_main(["webpage", str(args.db_path), "--no-excel-dump"])
 
 
