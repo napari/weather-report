@@ -58,7 +58,7 @@ jobs:
 
     - name: Send a stream message
       if: ${{ always()}}
-      uses: zulip/github-actions-zulip/send-message@08b6fbd07f5834e5b930a85bc7740e9fd44ab2e7 # v1.0.2
+      uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5 # v1.0.2
       with:
         api-key: ${{ secrets.ZULIP_API_KEY }}
         email: "dashboard-bot@napari.zulipchat.com"
@@ -116,7 +116,7 @@ jobs:
 
     - name: Send a stream message
       if: ${{ always()}}
-      uses: zulip/github-actions-zulip/send-message@08b6fbd07f5834e5b930a85bc7740e9fd44ab2e7 # v1.0.2
+      uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5 # v1.0.2
       with:
         api-key: ${{ secrets.ZULIP_API_KEY }}
         email: "dashboard-bot@napari.zulipchat.com"
@@ -182,7 +182,7 @@ jobs:
 
       - name: Send a stream message
         if: ${{ always()}}
-        uses: zulip/github-actions-zulip/send-message@08b6fbd07f5834e5b930a85bc7740e9fd44ab2e7 # v1.0.2
+        uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5 # v1.0.2
         with:
           api-key: ${{ secrets.ZULIP_API_KEY }}
           email: "dashboard-bot@napari.zulipchat.com"
