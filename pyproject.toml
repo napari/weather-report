@@ -55,7 +55,10 @@ Source = "https://github.com/unknown/napari-dashboard-"
 ci-test = [
     "gdown>=5.2.0",
 ]
-
+all = [
+   "napari-dashboard",
+   {include-group = "ci-test"},
+]
 
 
 [tool.hatch.envs.default]
