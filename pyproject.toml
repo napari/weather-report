@@ -44,7 +44,6 @@ dependencies = [
     "zulip",
     "traceback_with_variables",
     "alembic>=1.14.0",
-    "gdown>=5.2.0",
 ]
 
 [project.urls]
@@ -52,6 +51,14 @@ Documentation = "https://github.com/unknown/napari-dashboard-#readme"
 Issues = "https://github.com/unknown/napari-dashboard-/issues"
 Source = "https://github.com/unknown/napari-dashboard-"
 
+[dependency-groups]
+ci-test = [
+    "gdown>=5.2.0",
+]
+all = [
+   "napari-dashboard",
+   {include-group = "ci-test"},
+]
 
 
 [tool.hatch.envs.default]
