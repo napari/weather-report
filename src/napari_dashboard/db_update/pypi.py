@@ -227,6 +227,13 @@ def save_pypi_download_information(session: Session):
     init_python_version(session)
     session.commit()
 
+    request = requests.get("https://pypistats.org/")
+    if request.status_code == 502:
+        logger.warning(
+            "Pypistats is down, skipping fetching pypi stats for plugins"
+        )
+        return
+
     for plugin in tqdm.tqdm(
         get_packages_to_fetch(), desc="Fetching pypistats data"
     ):
