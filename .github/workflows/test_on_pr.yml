@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv sync
+          uv sync --group ci_test
 
       - name: Download and unpack the database
         run: |
@@ -55,7 +55,7 @@ jobs:
           cache-dependency-glob: "uv.lock"
       - name: Install dependencies
         run: |
-          uv sync
+          uv sync --group ci_test
 
       - name: Download and unpack the database
         run: |
