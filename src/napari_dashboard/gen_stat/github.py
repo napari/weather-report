@@ -35,6 +35,7 @@ CORE_DEVS = {
     "Czaki",
     "DragaDoncila",
     "GenevieveBuckley",
+    "jaimergp",
     "jni",
     "kephale",
     "kevinyamauchi",
