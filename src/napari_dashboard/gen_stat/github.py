@@ -29,12 +29,13 @@ if TYPE_CHECKING:
     from sqlalchemy.orm import Session
 
 
-CORE_DEVS = {
+CORE_TEAM = {
     "aganders3",
     "brisvag",
     "Czaki",
     "DragaDoncila",
     "GenevieveBuckley",
+    "jaimergp",
     "jni",
     "kephale",
     "kevinyamauchi",
@@ -429,10 +430,10 @@ def generate_contributors_stats(
         "pr_creators_since": pr_creators_since[:10],
         "pr_coauthors_since": pr_coauthors_since[:10],
         "pr_creators_non_core": [
-            x for x in pr_creators if x[0] not in CORE_DEVS
+            x for x in pr_creators if x[0] not in CORE_TEAM
         ][:10],
         "pr_creators_non_core_since": [
-            x for x in pr_creators_since if x[0] not in CORE_DEVS
+            x for x in pr_creators_since if x[0] not in CORE_TEAM
         ][:10],
         "pr_reviewers": pr_reviewers[:10],
         "pr_reviewers_since": pr_reviewers_since[:10],
@@ -812,7 +813,7 @@ def get_last_week_active_core_devs(session: Session):
         x.username
         for x in (
             session.query(GithubUser)
-            .filter(GithubUser.username.in_(CORE_DEVS))
+            .filter(GithubUser.username.in_(CORE_TEAM))
             .outerjoin(PullRequestComments)
             .filter(
                 PullRequestComments.date >= stat,
@@ -824,7 +825,7 @@ def get_last_week_active_core_devs(session: Session):
         x.username
         for x in (
             session.query(GithubUser)
-            .filter(GithubUser.username.in_(CORE_DEVS))
+            .filter(GithubUser.username.in_(CORE_TEAM))
             .outerjoin(PullRequestReviews)
             .filter(
                 PullRequestReviews.date >= stat,
@@ -836,7 +837,7 @@ def get_last_week_active_core_devs(session: Session):
         x.username
         for x in (
             session.query(GithubUser)
-            .filter(GithubUser.username.in_(CORE_DEVS))
+            .filter(GithubUser.username.in_(CORE_TEAM))
             .outerjoin(PullRequestCommits)
             .filter(
                 PullRequestCommits.date >= stat,
@@ -848,7 +849,7 @@ def get_last_week_active_core_devs(session: Session):
         x.username
         for x in (
             session.query(GithubUser)
-            .filter(GithubUser.username.in_(CORE_DEVS))
+            .filter(GithubUser.username.in_(CORE_TEAM))
             .outerjoin(IssueComment)
             .filter(IssueComment.date >= stat, IssueComment.date <= stop)
         ).all()
