@@ -374,8 +374,8 @@ def load_from_czi_file(czi_file: str, engine) -> None:
                 continue
             (
                 python_version,
-                python_implementation,
-                python_implementation_version,
+                _python_implementation,
+                _python_implementation_version,
                 system_name,
                 system_version,
                 distro_name,
