@@ -27,9 +27,10 @@ def save_user_info(
 
 
 def save_tag_info(
-    session: Session, tag_dict: dict[str, ForumTag], tag_data: list[str]
+    session: Session, tag_dict: dict[str, ForumTag], tag_data: list[dict]
 ):
-    for tag in tag_data:
+    for tag_ in tag_data:
+        tag = tag_["name"]
         if tag not in tag_dict:
             tag_dict[tag] = get_or_create(session, ForumTag, name=tag)
 
@@ -82,7 +83,7 @@ def save_forum_info(session: Session):
                             topic["last_posted_at"]
                         ).replace(tzinfo=None),
                         post_count=topic["posts_count"],
-                        tags=[tag_dict[x] for x in topic["tags"]],
+                        tags=[tag_dict[x["name"]] for x in topic["tags"]],
                         users=[
                             user_dict[x["user_id"]] for x in topic["posters"]
                         ],
@@ -94,7 +95,7 @@ def save_forum_info(session: Session):
                         topic["last_posted_at"]
                     ).replace(tzinfo=None)
                     topic_.post_count = topic["posts_count"]
-                    topic_.tags = [tag_dict[x] for x in topic["tags"]]
+                    topic_.tags = [tag_dict[x["name"]] for x in topic["tags"]]
                     topic_.users = [
                         user_dict[x["user_id"]] for x in topic["posters"]
                     ]
