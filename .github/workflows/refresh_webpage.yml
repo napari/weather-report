@@ -58,7 +58,7 @@ jobs:
 
     - name: Send a stream message
       if: ${{ always()}}
-      uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5 # v1.0.2
+      uses: zulip/github-actions-zulip/send-message@bd8ec52de371d139ae8313661b7d8318c19266aa # v2.0.1
       with:
         api-key: ${{ secrets.ZULIP_API_KEY }}
         email: "dashboard-bot@napari.zulipchat.com"
@@ -116,7 +116,7 @@ jobs:
 
     - name: Send a stream message
       if: ${{ always()}}
-      uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5 # v1.0.2
+      uses: zulip/github-actions-zulip/send-message@bd8ec52de371d139ae8313661b7d8318c19266aa # v2.0.1
       with:
         api-key: ${{ secrets.ZULIP_API_KEY }}
         email: "dashboard-bot@napari.zulipchat.com"
@@ -163,7 +163,7 @@ jobs:
           # I'm using GH_TOKEN_ because using GITHUB_TOKEN during development crash gh app
 
       - name: Deploy Dashboard
-        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./webpage
@@ -182,7 +182,7 @@ jobs:
 
       - name: Send a stream message
         if: ${{ always()}}
-        uses: zulip/github-actions-zulip/send-message@e4c8f27c732ba9bd98ac6be0583096dea82feea5 # v1.0.2
+        uses: zulip/github-actions-zulip/send-message@bd8ec52de371d139ae8313661b7d8318c19266aa # v2.0.1
         with:
           api-key: ${{ secrets.ZULIP_API_KEY }}
           email: "dashboard-bot@napari.zulipchat.com"
