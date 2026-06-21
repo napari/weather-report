@@ -104,9 +104,12 @@ def _save_pepy_download_stat(session: Session, package: str):
     if res.status_code == 429:
         logger.warning("Too many requests for %s, waiting", package)
         retry_default = 30 if "CI" in os.environ else 1
-        retry_after = res.headers.get("X-Rate-Limit-Retry-After-Seconds", retry_default)
+        retry_after = res.headers.get(
+            "X-Rate-Limit-Retry-After-Seconds", retry_default
+        )
         logger.warning(
-            "Retrying in %s seconds", retry_after if retry_after != "null" else 1
+            "Retrying in %s seconds",
+            retry_after if retry_after != "null" else 1,
         )
         sleep(retry_after)
         _save_pepy_download_stat(session, package)
