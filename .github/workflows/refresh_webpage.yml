@@ -169,6 +169,8 @@ jobs:
           publish_dir: ./webpage
           publish_branch: gh_pages
           exclude_assets: 'napari_dashboard.xlsx'
+          user_name: 'napari-bot'
+          user_email: 'napari-bot@users.noreply.github.com'
 
       - name: Send zulip message
         if: ${{ always() }}
