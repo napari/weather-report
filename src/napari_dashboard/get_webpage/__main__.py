@@ -18,10 +18,15 @@ def main(args: Sequence[str] | None = None):
     )
     parser.add_argument("db_path", help="Path to the database", type=Path)
     parser.add_argument("--no-excel-dump", action="store_true")
-    parser.set_defaults(
-        since_date=datetime.datetime(year=2024, month=1, day=1)
+    parser.add_argument(
+        "--since-date",
+        type=lambda s: datetime.datetime.strptime(s, "%Y-%m-%d"),
+        default=None,
+        help="Start date for statistics (default: 180 days ago)",
     )
     args = parser.parse_args(args)
+    if args.since_date is None:
+        args.since_date = datetime.datetime.now() - datetime.timedelta(days=180)
 
     generate_webpage(
         target_path=args.directory,
