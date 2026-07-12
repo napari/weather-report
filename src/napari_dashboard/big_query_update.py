@@ -112,9 +112,11 @@ def is_ci_install(system_release: str) -> bool:
 
 
 def _to_str(val: Any) -> str:
+    if isinstance(val, str):
+        return val
     if val is None:
         return ""
-    if isnan(val):
+    if isinstance(val, float) and isnan(val):
         return ""
     return str(val)
 
