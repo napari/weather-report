@@ -5,7 +5,9 @@ import datetime
 import os.path
 import sys
 from dataclasses import dataclass
+from math import isnan
 from pathlib import Path
+from typing import Any
 
 import humanize
 import pandas as pd
@@ -109,6 +111,16 @@ def is_ci_install(system_release: str) -> bool:
     return False
 
 
+def _to_str(val: Any) -> str:
+    if isinstance(val, str):
+        return val
+    if val is None:
+        return ""
+    if isinstance(val, float) and isnan(val):
+        return ""
+    return str(val)
+
+
 def load_from_query(df: pd.DataFrame, engine: Engine):
     """Convert the data frame to the PyPi object and save it to the database"""
     with Session(engine) as session:
@@ -123,10 +135,10 @@ def load_from_query(df: pd.DataFrame, engine: Engine):
                 project=project_info.name,
                 version=str(project_info.version),
                 python_version=row[1].python,
-                system_name=row[1].system or "",
-                system_release=row[1].system_release or "",
-                distro_name=row[1].distro_name or "",
-                distro_version=row[1].distro_version or "",
+                system_name=_to_str(row[1].system),
+                system_release=_to_str(row[1].system_release),
+                distro_name=_to_str(row[1].distro_name),
+                distro_version=_to_str(row[1].distro_version),
                 wheel=project_info.wheel,
                 ci_install=is_ci,
             )
