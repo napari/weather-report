@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-def main(args: None | list[str] = None):
+def main(args: list[str] | None = None):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "db_path",

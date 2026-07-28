@@ -17,7 +17,7 @@ from napari_dashboard.gdrive_util import (
 )
 
 
-def main(args: None | list[str] = None):
+def main(args: list[str] | None = None):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "db_path",
