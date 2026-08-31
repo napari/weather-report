@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 from napari_dashboard.gdrive_util import fetch_database
 from napari_dashboard.gen_stat.github import (
     get_last_week,
-    get_last_week_active_core_devs,
+    get_last_week_active_core_members,
+    get_last_week_active_triage_members,
     get_last_week_closed_issues_as_md,
     get_last_week_closed_pr_md,
     get_last_week_merged_pr_md,
@@ -64,8 +65,11 @@ def generate_weekly_summary(fetch_db: bool) -> list[str]:
             res.append("\n## Closed Issues\n")
             res.extend(f" - {text}" for text in closed_issues)
 
-        res.append("\n## Core-devs active in repositories\n")
-        res.append(", ".join(get_last_week_active_core_devs(session)))
+        res.append("\n## Core-team members active in repositories\n")
+        res.append(", ".join(get_last_week_active_core_members(session)))
+
+        res.append("\n\n## Triage-team members active in repositories\n")
+        res.append(", ".join(get_last_week_active_triage_members(session)))
 
     logger.info("Summary generated")
 

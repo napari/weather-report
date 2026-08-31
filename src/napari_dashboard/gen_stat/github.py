@@ -47,6 +47,8 @@ CORE_TEAM = {
     "willingc",
 }
 
+TRIAGE_TEAM = {"Aniketsy", "jacopoabramo"}
+
 
 def get_repo_model(user: str, repo: str, session: Session) -> Repository:
     return (
@@ -800,19 +802,35 @@ def get_last_week_closed_issues_as_md(session: Session) -> list[str]:
     ]
 
 
-def get_last_week_active_core_devs(session: Session):
+def get_last_week_active_core_members(session: Session) -> list[str]:
     """Get the active core developers from the last week
 
     Get core-devs who has created at least one commnent,
     review or commit in the last week
     """
+    return get_last_week_active_team_members(session, CORE_TEAM)
+
+
+def get_last_week_active_triage_members(session: Session) -> list[str]:
+    """Get the active triage developers from the last week
+
+    Get triage-devs who has created at least one commnent,
+    review or commit in the last week
+    """
+    return get_last_week_active_team_members(session, TRIAGE_TEAM)
+
+
+def get_last_week_active_team_members(
+    session: Session, team: set[str]
+) -> list[str]:
+    """Get the active team members from the last week"""
     stat, stop = get_last_week()
 
     pr_comments = [
         x.username
         for x in (
             session.query(GithubUser)
-            .filter(GithubUser.username.in_(CORE_TEAM))
+            .filter(GithubUser.username.in_(team))
             .outerjoin(PullRequestComments)
             .filter(
                 PullRequestComments.date >= stat,
@@ -824,7 +842,7 @@ def get_last_week_active_core_devs(session: Session):
         x.username
         for x in (
             session.query(GithubUser)
-            .filter(GithubUser.username.in_(CORE_TEAM))
+            .filter(GithubUser.username.in_(team))
             .outerjoin(PullRequestReviews)
             .filter(
                 PullRequestReviews.date >= stat,
@@ -836,7 +854,7 @@ def get_last_week_active_core_devs(session: Session):
         x.username
         for x in (
             session.query(GithubUser)
-            .filter(GithubUser.username.in_(CORE_TEAM))
+            .filter(GithubUser.username.in_(team))
             .outerjoin(PullRequestCommits)
             .filter(
                 PullRequestCommits.date >= stat,
@@ -848,7 +866,7 @@ def get_last_week_active_core_devs(session: Session):
         x.username
         for x in (
             session.query(GithubUser)
-            .filter(GithubUser.username.in_(CORE_TEAM))
+            .filter(GithubUser.username.in_(team))
             .outerjoin(IssueComment)
             .filter(IssueComment.date >= stat, IssueComment.date <= stop)
         ).all()
