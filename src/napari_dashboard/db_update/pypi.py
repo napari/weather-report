@@ -250,8 +250,7 @@ def _save_package_release(session: Session, name: str):
         if not artifacts:
             continue
         release_date = min(
-            dt.datetime.fromisoformat(x["upload_time"])
-            for x in artifacts
+            dt.datetime.fromisoformat(x["upload_time"]) for x in artifacts
         ).date()
         session.merge(
             PackageRelease(

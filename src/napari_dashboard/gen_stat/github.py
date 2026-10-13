@@ -101,10 +101,7 @@ def calc_stars_per_day_cumulative(
 
 
 def get_pull_request_creators(
-    user: str,
-    repo: str,
-    session: Session,
-    since: dt.datetime | None = None,
+    user: str, repo: str, session: Session, since: dt.datetime | None = None
 ) -> list[tuple[str, int]]:
     # get all contributors with number of pull requests
     repo_model = get_repo_model(user, repo, session)
@@ -128,10 +125,7 @@ def get_pull_request_creators(
 
 
 def get_pull_request_reviewers(
-    user: str,
-    repo: str,
-    session: Session,
-    since: dt.datetime | None = None,
+    user: str, repo: str, session: Session, since: dt.datetime | None = None
 ) -> list[tuple[str, int]]:
     # get all contributors with number of pull requests based on
     # PullRequests.coauthors
@@ -162,10 +156,7 @@ def get_pull_request_reviewers(
 
 
 def get_pull_request_coauthors(
-    user: str,
-    repo: str,
-    session: Session,
-    since: dt.datetime | None = None,
+    user: str, repo: str, session: Session, since: dt.datetime | None = None
 ) -> list[tuple[str, int]]:
     # get all contributors with number of pull requests based on
     # PullRequests.coauthors
@@ -459,9 +450,7 @@ def generate_pr_and_issue_time_stats(user: str, repo: str, session: Session):
     # generate date array since initial_date
     days_array = [
         initial_date + dt.timedelta(days=i)
-        for i in range(
-            (dt.datetime.now().date() - initial_date).days + 1
-        )
+        for i in range((dt.datetime.now().date() - initial_date).days + 1)
     ]
     index_dict = {day: i for i, day in enumerate(days_array)}
     issues_open = [0] * len(days_array)
@@ -606,9 +595,9 @@ def get_last_week() -> tuple[dt.datetime, dt.datetime]:
     """
     dt.datetime.now().weekday()
     today = dt.datetime.now()
-    prev_monday = (
-        today - dt.timedelta(days=today.weekday() + 7)
-    ).replace(hour=0, minute=0, second=0, microsecond=0)
+    prev_monday = (today - dt.timedelta(days=today.weekday() + 7)).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
     last_sunday = prev_monday + dt.timedelta(days=7, seconds=-1)
     return prev_monday, last_sunday
 

@@ -495,9 +495,7 @@ def generate_webpage(
         last_week_summary = get_weekly_summary_of_activity(session)
         all_downloads = get_per_country_download(session, "napari")
         last_month_downloads = get_per_country_download(
-            session,
-            "napari",
-            dt.date.today() - dt.timedelta(days=30),
+            session, "napari", dt.date.today() - dt.timedelta(days=30)
         )
     logger.info("Data loaded from database")
 

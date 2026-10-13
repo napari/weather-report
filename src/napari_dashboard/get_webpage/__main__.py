@@ -26,9 +26,7 @@ def main(args: Sequence[str] | None = None):
     )
     args = parser.parse_args(args)
     if args.since_date is None:
-        args.since_date = dt.datetime.now() - dt.timedelta(
-            days=180
-        )
+        args.since_date = dt.datetime.now() - dt.timedelta(days=180)
 
     generate_webpage(
         target_path=args.directory,
