@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import time
 
 import requests
@@ -76,10 +76,10 @@ def save_forum_info(session: Session):
                         title=topic["title"],
                         fancy_title=topic["fancy_title"],
                         slug=topic["slug"],
-                        created_at=datetime.datetime.fromisoformat(
+                        created_at=dt.datetime.fromisoformat(
                             topic["created_at"]
                         ).replace(tzinfo=None),
-                        last_posted_at=datetime.datetime.fromisoformat(
+                        last_posted_at=dt.datetime.fromisoformat(
                             topic["last_posted_at"]
                         ).replace(tzinfo=None),
                         post_count=topic["posts_count"],
@@ -91,7 +91,7 @@ def save_forum_info(session: Session):
                     session.add(topic)
                 else:
                     topic_ = topic_list[0]
-                    topic_.last_posted_at = datetime.datetime.fromisoformat(
+                    topic_.last_posted_at = dt.datetime.fromisoformat(
                         topic["last_posted_at"]
                     ).replace(tzinfo=None)
                     topic_.post_count = topic["posts_count"]

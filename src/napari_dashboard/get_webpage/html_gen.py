@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import logging
 import math
 from pathlib import Path
@@ -162,8 +162,8 @@ def generate_pull_request_plot2(stats: dict):
     return plot.to_html(full_html=False, include_plotlyjs="cdn")
 
 
-def generate_pull_request_plot3(stats: dict, since: datetime.datetime):
-    last_week_count = -(datetime.datetime.now() - since).days // 7
+def generate_pull_request_plot3(stats: dict, since: dt.datetime):
+    last_week_count = -(dt.datetime.now() - since).days // 7
     plot = go.Figure()
     plot.add_trace(
         go.Bar(
@@ -213,8 +213,8 @@ def calc_fraction_of_pr(stats, total):
     return [x / t * 100 if t > 0 else 0 for x, t in zip(stats, total)]
 
 
-def generate_pull_request_plot4(stats: dict, since: datetime.datetime):
-    last_week_count = -(datetime.datetime.now() - since).days // 7
+def generate_pull_request_plot4(stats: dict, since: dt.datetime):
+    last_week_count = -(dt.datetime.now() - since).days // 7
     aggregated_data = [
         sum(x)
         for x in zip(
@@ -272,8 +272,8 @@ def generate_pull_request_plot4(stats: dict, since: datetime.datetime):
     return plot.to_html(full_html=False, include_plotlyjs="cdn")
 
 
-def generate_pull_request_plot5(stats: dict, since: datetime.datetime):
-    last_week_count = -(datetime.datetime.now() - since).days // 7
+def generate_pull_request_plot5(stats: dict, since: dt.datetime):
+    last_week_count = -(dt.datetime.now() - since).days // 7
     aggregated_data = [
         sum(x)
         for x in zip(
@@ -410,7 +410,7 @@ def get_plugin_info():
 def generate_webpage(
     target_path: Path,
     db_path: Path,
-    since_date: datetime.datetime,
+    since_date: dt.datetime,
     dump_excel: bool = True,
 ) -> None:
     """
@@ -497,7 +497,7 @@ def generate_webpage(
         last_month_downloads = get_per_country_download(
             session,
             "napari",
-            datetime.date.today() - datetime.timedelta(days=30),
+            dt.date.today() - dt.timedelta(days=30),
         )
     logger.info("Data loaded from database")
 
@@ -507,7 +507,7 @@ def generate_webpage(
         "project": "Napari",
         "author": "Grzegorz Bokota",
         "stats": stats,
-        "today": datetime.datetime.now().strftime("%Y-%m-%d"),
+        "today": dt.datetime.now().strftime("%Y-%m-%d"),
         "base_day": since_date.strftime("%Y-%m-%d"),
         "pypi_downloads": pypi_download_info,
         "forum": forums_stats,

@@ -1,11 +1,11 @@
-import datetime
+import datetime as dt
 
 from sqlalchemy.orm import Session
 
 from napari_dashboard.db_schema.imagesc import ForumTopic, ForumUser
 
 
-def get_topics_count(since: datetime.date, session: Session) -> dict:
+def get_topics_count(since: dt.date, session: Session) -> dict:
     count = session.query(ForumTopic).count()
     active_count = (
         session.query(ForumTopic)

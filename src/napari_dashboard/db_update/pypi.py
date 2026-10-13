@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import logging
 import os
 import typing
@@ -62,7 +62,7 @@ def get_last_entry_timestamp(engine: Engine) -> str:
 
 
 def get_now_timestamp() -> str:
-    return datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f UTC")
+    return dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f UTC")
 
 
 QUERY = """
@@ -118,7 +118,7 @@ def _save_pepy_download_stat(session: Session, package: str):
         PePyTotalDownloads(name=package, downloads=pepy["total_downloads"])
     )
     for day, downloads in pepy["downloads"].items():
-        day_date = datetime.date.fromisoformat(day)
+        day_date = dt.date.fromisoformat(day)
         for version, count in downloads.items():
             # if (pepy := session.query(PePyDownloadStat).filter(
             #     PePyDownloadStat.name == package,
@@ -197,7 +197,7 @@ def _save_pypi_download_information(session: Session, package: str):
         session.merge(
             PyPiStatsDownloads(
                 name=package,
-                date=datetime.date.fromisoformat(el["date"]),
+                date=dt.date.fromisoformat(el["date"]),
                 downloads=el["downloads"],
             )
         )
@@ -205,7 +205,7 @@ def _save_pypi_download_information(session: Session, package: str):
         session.merge(
             PyPiDownloadPerPythonVersion(
                 package_name=package,
-                package_date=datetime.date.fromisoformat(el["date"]),
+                package_date=dt.date.fromisoformat(el["date"]),
                 python_version_name=el["category"],
                 downloads=el["downloads"],
             )
@@ -214,7 +214,7 @@ def _save_pypi_download_information(session: Session, package: str):
         session.merge(
             PyPiDownloadPerOS(
                 package_name=package,
-                package_date=datetime.date.fromisoformat(el["date"]),
+                package_date=dt.date.fromisoformat(el["date"]),
                 os_name=el["category"],
                 downloads=el["downloads"],
             )
@@ -250,7 +250,7 @@ def _save_package_release(session: Session, name: str):
         if not artifacts:
             continue
         release_date = min(
-            datetime.datetime.fromisoformat(x["upload_time"])
+            dt.datetime.fromisoformat(x["upload_time"])
             for x in artifacts
         ).date()
         session.merge(

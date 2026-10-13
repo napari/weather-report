@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import requests
 import tqdm
@@ -9,7 +9,7 @@ from napari_dashboard.utils import requests_get
 
 
 def _save_conda_download_information_for_package(
-    session: Session, pypi_name: str, conda_name: str, today: datetime.date
+    session: Session, pypi_name: str, conda_name: str, today: dt.date
 ):
     if conda_name is None:
         return
@@ -47,7 +47,7 @@ def _save_conda_download_information_for_package(
 def save_conda_download_information(session: Session, limit: int = 10):
     response = requests_get("https://api.napari.org/api/conda")
     conda_translation = response.json()
-    today = datetime.date.today()
+    today = dt.date.today()
 
     _save_conda_download_information_for_package(
         session, "napari", "conda-forge/napari", today

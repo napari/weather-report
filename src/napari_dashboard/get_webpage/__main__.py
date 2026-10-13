@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-import datetime
+import datetime as dt
 import typing
 from pathlib import Path
 
@@ -20,13 +20,13 @@ def main(args: Sequence[str] | None = None):
     parser.add_argument("--no-excel-dump", action="store_true")
     parser.add_argument(
         "--since-date",
-        type=lambda s: datetime.datetime.strptime(s, "%Y-%m-%d"),
+        type=lambda s: dt.datetime.strptime(s, "%Y-%m-%d"),
         default=None,
         help="Start date for statistics (default: 180 days ago)",
     )
     args = parser.parse_args(args)
     if args.since_date is None:
-        args.since_date = datetime.datetime.now() - datetime.timedelta(
+        args.since_date = dt.datetime.now() - dt.timedelta(
             days=180
         )
 
