@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from typing import NamedTuple
 
 from sqlalchemy import desc, func
@@ -52,7 +52,7 @@ def _get_conda_download_info(
     )
 
 
-def _last_date(session: Session, packages: set[str]) -> datetime.date:
+def _last_date(session: Session, packages: set[str]) -> dt.date:
     return (
         session.query(func.max(CondaDownload.date))
         .filter(CondaDownload.pypi_name.in_(packages))
@@ -103,7 +103,7 @@ def get_total_conda_download(session: Session, packages: set[str]):
 
 def get_conda_download_per_day(
     session: Session, package: str
-) -> dict[datetime.date, int]:
+) -> dict[dt.date, int]:
     query_res = (
         session.query(
             CondaDownload.date, func.sum(CondaDownload.download_count)
@@ -119,7 +119,7 @@ def get_conda_download_per_day(
         diff_days = (date - prev_date).days
         download_per_day = (count - query_res[i - 1][1]) / diff_days
         for i in range(diff_days):
-            res[prev_date + datetime.timedelta(days=i + 1)] = download_per_day
+            res[prev_date + dt.timedelta(days=i + 1)] = download_per_day
         prev_date = date
 
     return res
@@ -128,7 +128,7 @@ def get_conda_download_per_day(
 def get_last_month_version_downloads_per_version(
     session: Session, package: str
 ) -> list[tuple[str, int]]:
-    last_month = datetime.date.today() - datetime.timedelta(days=30)
+    last_month = dt.date.today() - dt.timedelta(days=30)
 
     # get date available in database
     date_query = (

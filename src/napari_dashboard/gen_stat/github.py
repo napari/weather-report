@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import itertools
 from functools import lru_cache
 from typing import TYPE_CHECKING, Callable
@@ -101,10 +101,7 @@ def calc_stars_per_day_cumulative(
 
 
 def get_pull_request_creators(
-    user: str,
-    repo: str,
-    session: Session,
-    since: datetime.datetime | None = None,
+    user: str, repo: str, session: Session, since: dt.datetime | None = None
 ) -> list[tuple[str, int]]:
     # get all contributors with number of pull requests
     repo_model = get_repo_model(user, repo, session)
@@ -128,10 +125,7 @@ def get_pull_request_creators(
 
 
 def get_pull_request_reviewers(
-    user: str,
-    repo: str,
-    session: Session,
-    since: datetime.datetime | None = None,
+    user: str, repo: str, session: Session, since: dt.datetime | None = None
 ) -> list[tuple[str, int]]:
     # get all contributors with number of pull requests based on
     # PullRequests.coauthors
@@ -162,10 +156,7 @@ def get_pull_request_reviewers(
 
 
 def get_pull_request_coauthors(
-    user: str,
-    repo: str,
-    session: Session,
-    since: datetime.datetime | None = None,
+    user: str, repo: str, session: Session, since: dt.datetime | None = None
 ) -> list[tuple[str, int]]:
     # get all contributors with number of pull requests based on
     # PullRequests.coauthors
@@ -196,7 +187,7 @@ def get_pull_request_coauthors(
 
 
 def get_recent_contributors(
-    user: str, repo: str, session: Session, since: datetime.datetime
+    user: str, repo: str, session: Session, since: dt.datetime
 ) -> list[str]:
     # get all contributors with number of pull requests
     repo_model = get_repo_model(user, repo, session)
@@ -216,7 +207,7 @@ def get_recent_contributors(
 
 
 def count_recent_pull_requests(
-    user: str, repo: str, session: Session, since: datetime.datetime
+    user: str, repo: str, session: Session, since: dt.datetime
 ) -> int:
     # get all contributors with number of pull requests
     repo_model = get_repo_model(user, repo, session)
@@ -232,7 +223,7 @@ def count_recent_pull_requests(
 
 
 def count_recent_closed_issues(
-    user: str, repo: str, session: Session, since: datetime.datetime
+    user: str, repo: str, session: Session, since: dt.datetime
 ) -> int:
     # get all contributors with number of pull requests
     repo_model = get_repo_model(user, repo, session)
@@ -248,7 +239,7 @@ def count_recent_closed_issues(
 
 
 def count_recent_opened_issues(
-    user: str, repo: str, session: Session, since: datetime.datetime
+    user: str, repo: str, session: Session, since: dt.datetime
 ) -> int:
     # get all contributors with number of pull requests
     repo_model = get_repo_model(user, repo, session)
@@ -267,7 +258,7 @@ def count_recent_pull_requests_by_label(
     user: str,
     repo: str,
     session: Session,
-    since: datetime.datetime,
+    since: dt.datetime,
     labels: Sequence[str],
 ) -> dict[str, int]:
     # get information how many pull requests have a specific label
@@ -287,9 +278,9 @@ def count_recent_pull_requests_by_label(
 
 
 def generate_pr_stats(
-    user: str, repo: str, session: Session, since: datetime.datetime
+    user: str, repo: str, session: Session, since: dt.datetime
 ) -> dict[str, int]:
-    days = (datetime.datetime.now() - since).days
+    days = (dt.datetime.now() - since).days
     repo_model = get_repo_model(user, repo, session)
     total_pull_requests = (
         session.query(PullRequests)
@@ -381,9 +372,9 @@ def bundle_downloads_count(user: str, repo: str, session: Session):
 def _generate_contributors_stats(
     repo_li: list[tuple[str, str]],
     session: Session,
-    since: datetime.datetime | None,
+    since: dt.datetime | None,
     fun: Callable[
-        [str, str, Session, datetime.datetime | None], list[tuple[str, int]]
+        [str, str, Session, dt.datetime | None], list[tuple[str, int]]
     ],
 ) -> dict[str, object]:
     per_repo_stats = {
@@ -405,7 +396,7 @@ def _generate_contributors_stats(
 
 
 def generate_contributors_stats(
-    repo_li: list[tuple[str, str]], session: Session, since: datetime.datetime
+    repo_li: list[tuple[str, str]], session: Session, since: dt.datetime
 ) -> dict[str, object]:
     pr_creators = _generate_contributors_stats(
         repo_li, session, None, get_pull_request_creators
@@ -458,10 +449,8 @@ def generate_pr_and_issue_time_stats(user: str, repo: str, session: Session):
     ).date()
     # generate date array since initial_date
     days_array = [
-        initial_date + datetime.timedelta(days=i)
-        for i in range(
-            (datetime.datetime.now().date() - initial_date).days + 1
-        )
+        initial_date + dt.timedelta(days=i)
+        for i in range((dt.datetime.now().date() - initial_date).days + 1)
     ]
     index_dict = {day: i for i, day in enumerate(days_array)}
     issues_open = [0] * len(days_array)
@@ -569,7 +558,7 @@ def generate_basic_stats(
     user: str,
     repo: str,
     session: Session,
-    since: datetime.datetime,
+    since: dt.datetime,
     labels: Sequence[str],
 ) -> dict[str, object]:
     pr_stats = generate_pr_stats(user, repo, session, since)
@@ -595,7 +584,7 @@ def generate_basic_stats(
 
 
 @lru_cache
-def get_last_week() -> tuple[datetime.datetime, datetime.datetime]:
+def get_last_week() -> tuple[dt.datetime, dt.datetime]:
     """
     Calcualte the last full week form Monday to Sunday
 
@@ -604,12 +593,12 @@ def get_last_week() -> tuple[datetime.datetime, datetime.datetime]:
     tuple of two datetime.datetime
         Tuple of upper and lower bound-
     """
-    datetime.datetime.now().weekday()
-    today = datetime.datetime.now()
-    prev_monday = (
-        today - datetime.timedelta(days=today.weekday() + 7)
-    ).replace(hour=0, minute=0, second=0, microsecond=0)
-    last_sunday = prev_monday + datetime.timedelta(days=7, seconds=-1)
+    dt.datetime.now().weekday()
+    today = dt.datetime.now()
+    prev_monday = (today - dt.timedelta(days=today.weekday() + 7)).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+    last_sunday = prev_monday + dt.timedelta(days=7, seconds=-1)
     return prev_monday, last_sunday
 
 

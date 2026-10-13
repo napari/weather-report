@@ -1,5 +1,5 @@
 # noqa: INP001
-import datetime
+import datetime as dt
 import os
 from pathlib import Path
 
@@ -57,7 +57,7 @@ def main():
                         if commit["author"]
                         else pr.user.login
                     )
-                    date = datetime.datetime.fromisoformat(
+                    date = dt.datetime.fromisoformat(
                         commit["commit"]["author"]["date"]
                     ).replace(tzinfo=None)
                     ensure_user(user_login, session)

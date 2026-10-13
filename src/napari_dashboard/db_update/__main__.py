@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-import datetime
+import datetime as dt
 import logging
 import typing
 from pathlib import Path
@@ -34,7 +34,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def check_if_recently_updated(session: Session) -> bool:
-    twelve_hours_ago = datetime.datetime.now() - datetime.timedelta(hours=12)
+    twelve_hours_ago = dt.datetime.now() - dt.timedelta(hours=12)
     last_update = (
         session.query(UpdateDBInfo)
         .filter(UpdateDBInfo.datetime > twelve_hours_ago)
@@ -42,7 +42,7 @@ def check_if_recently_updated(session: Session) -> bool:
     )
     if last_update is None:
         return False
-    return last_update.datetime.date() == datetime.date.today()
+    return last_update.datetime.date() == dt.date.today()
 
 
 def update_github(session: Session):
@@ -81,7 +81,7 @@ def main(args: Sequence[str] | None = None) -> bool:
         save_pepy_download_stat(session)
         save_pypi_download_information(session)
         save_package_release(session)
-        session.add(UpdateDBInfo(datetime=datetime.datetime.now()))
+        session.add(UpdateDBInfo(datetime=dt.datetime.now()))
         session.commit()
     return True
 

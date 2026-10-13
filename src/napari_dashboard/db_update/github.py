@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import logging
 import math
 import os
@@ -291,7 +291,7 @@ def save_pull_requests(user: str, repo: str, session: Session) -> None:
                 if commit["author"]
                 else pr.user.login
             )
-            date = datetime.datetime.fromisoformat(
+            date = dt.datetime.fromisoformat(
                 commit["commit"]["author"]["date"]
             ).replace(tzinfo=None)
             ensure_user(user_login, session)

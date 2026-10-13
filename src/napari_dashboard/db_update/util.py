@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import json
 import sys
 
@@ -9,7 +9,7 @@ class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Row):
             return list(o)
-        if isinstance(o, datetime.date):
+        if isinstance(o, dt.date):
             return o.isoformat()
         return json.JSONEncoder.default(self, o)
 

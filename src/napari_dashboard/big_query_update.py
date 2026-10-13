@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-import datetime
+import datetime as dt
 import os.path
 import sys
 from dataclasses import dataclass
@@ -397,10 +397,10 @@ def load_from_czi_file(czi_file: str, engine) -> None:
             is_ci = is_ci_install(row[1].DETAILS_ALL)
             parse_python_from_string(row[1].DETAILS_ALL)
             obj = PyPi(
-                timestamp=datetime.datetime.strptime(
+                timestamp=dt.datetime.strptime(
                     row[1].TIMESTAMP, "%Y-%m-%d %H:%M:%S.%f"
                 ),
-                date=datetime.datetime.strptime(
+                date=dt.datetime.strptime(
                     row[1].TIMESTAMP, "%Y-%m-%d %H:%M:%S.%f"
                 ).date(),
                 country_code=row[1].COUNTRY_CODE,
@@ -429,14 +429,14 @@ def make_big_query_and_save_to_database(
 
     if last_entry_date is None:
         raise ValueError("No entry found in the database")
-    upper_constraints = datetime.datetime.now()
+    upper_constraints = dt.datetime.now()
     upper_constraints = upper_constraints.replace(
         hour=0, minute=0, second=0, microsecond=0
     )
-    if upper_constraints - last_entry_date < datetime.timedelta(hours=10):
+    if upper_constraints - last_entry_date < dt.timedelta(hours=10):
         send_zulip_message("Too little time between the last entry and now")
         return False
-    if upper_constraints - last_entry_date > datetime.timedelta(days=15):
+    if upper_constraints - last_entry_date > dt.timedelta(days=15):
         raise ValueError("Too much time between the last entry and now")
 
     qr = QUERRY.format(
@@ -485,7 +485,7 @@ def get_information_about_processed_bytes() -> int:
     # Initialize the client
     client = bigquery.Client()
 
-    now = datetime.datetime.now(datetime.timezone.utc)
+    now = dt.datetime.now(dt.timezone.utc)
     month_begin = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
     total_bytes_processed = 0
