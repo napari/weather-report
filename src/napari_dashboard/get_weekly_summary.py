@@ -68,8 +68,10 @@ def generate_weekly_summary(fetch_db: bool) -> list[str]:
         res.append("\n## Core-team members active in repositories\n")
         res.append(", ".join(get_last_week_active_core_members(session)))
 
-        res.append("\n\n## Triage-team members active in repositories\n")
-        res.append(", ".join(get_last_week_active_triage_members(session)))
+        active_triage = get_last_week_active_triage_members(session)
+        if active_triage:
+            res.append("\n## Triage-team members active in repositories\n")
+            res.append(", ".join(active_triage))
 
     logger.info("Summary generated")
 

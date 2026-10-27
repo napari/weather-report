@@ -31,10 +31,12 @@ if TYPE_CHECKING:
 
 CORE_TEAM = {
     "aganders3",
+    "Aniketsy",
     "brisvag",
     "carlosmariorr",
     "Czaki",
     "DragaDoncila",
+    "jacopoabramo",
     "jaimergp",
     "jni",
     "kephale",
@@ -47,7 +49,7 @@ CORE_TEAM = {
     "willingc",
 }
 
-TRIAGE_TEAM = {"Aniketsy", "jacopoabramo"}
+TRIAGE_TEAM = {}
 
 
 def get_repo_model(user: str, repo: str, session: Session) -> Repository:
