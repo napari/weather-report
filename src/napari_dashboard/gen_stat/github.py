@@ -49,7 +49,7 @@ CORE_TEAM = {
     "willingc",
 }
 
-TRIAGE_TEAM = {}
+TRIAGE_TEAM = {"matthiasschabel"}
 
 
 def get_repo_model(user: str, repo: str, session: Session) -> Repository:
