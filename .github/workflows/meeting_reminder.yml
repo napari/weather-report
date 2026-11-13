@@ -1,0 +1,66 @@
+name: Meeting reminder
+
+# Announce upcoming meetings from the napari calendar in the
+# "community-meeting" Zulip channel, one topic per meeting:
+#  * Friday: meetings on Saturday, Sunday and Monday,
+#  * Monday: meetings from Tuesday to Friday.
+# A push to main (or a manual run) posts the whole next week to the
+# "Meeting reminder" topic in "metrics and analytics" to check that
+# the bot works.
+
+on:
+  schedule:
+    - cron: '0 12 * * 5'  # Friday 12:00 UTC
+    - cron: '0 8 * * 1'  # Monday 08:00 UTC
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  post_meetings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: 3.12
+      - name: Install uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Post meetings to Zulip
+        run: |
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            case "$SCHEDULE" in
+              "0 12 * * 5") WINDOW=friday ;;
+              "0 8 * * 1") WINDOW=monday ;;
+              *) echo "Unknown schedule: $SCHEDULE"; exit 1 ;;
+            esac
+            # 215290 is the id of the "community-meeting" channel;
+            # every meeting gets its own topic
+            uv run traceback-with-variables napari_dashboard.meeting_reminder \
+              --window "$WINDOW" --send-zulip --channel 215290
+          else
+            uv run traceback-with-variables napari_dashboard.meeting_reminder \
+              --window next-week --send-zulip --channel "metrics and analytics" \
+              --topic "Meeting reminder"
+          fi
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          ZULIP_API_KEY: ${{ secrets.ZULIP_API_KEY }}
