@@ -33,6 +33,8 @@ There are three workflows triggered by GitHub Actions:
 
    Every meeting is posted in its own topic, named like `2026-11-12/13 napari community meeting (Pacific)`.
    The topic lists every date on which the meeting is during waking hours in America, Europe or Australia.
+   The message asks people who plan to join to react with :+1:, and the bot adds the first :+1: itself,
+   so the number of attendees is the reaction count minus one.
    Cancelled meetings, all-day entries and meetings with `core team` or `steering council` in the title are skipped.
    On every push to the `main` branch (and on manual run) meetings of the whole next week are sent to the single
    `Meeting reminder` topic of the `metrics and analytics` stream to check that the bot works.

@@ -26,6 +26,7 @@ import html
 import logging
 import os
 import re
+import sys
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
 from urllib.parse import quote, unquote
@@ -55,6 +56,10 @@ COMMUNITY_TIMEZONES = (
 )
 WAKING_HOURS = range(7, 23)
 ZULIP_MAX_TOPIC_LENGTH = 60
+
+# People react with this emoji to say they plan to join; the bot adds the
+# first reaction itself so joining is a single click.
+RSVP_EMOJI = "+1"
 
 _CANCELLED_TITLE = re.compile(r"^\s*cancell?ed\b", re.IGNORECASE)
 _URL_END = r"[^\s<>\"'()\[\]\\]*"
@@ -197,6 +202,13 @@ def format_meeting_message(meeting: Meeting) -> str:
         lines.append(
             f"See the [napari calendar]({CALENDAR_PAGE}) for details. :napari:"
         )
+    lines += [
+        "",
+        (
+            f"Planning to join? React with :{RSVP_EMOJI}: to this message "
+            "so we know who to expect."
+        ),
+    ]
     if meeting.zoom or meeting.agenda:
         lines.append("")
     if meeting.zoom:
@@ -214,14 +226,18 @@ def format_no_meetings(start: datetime, end: datetime) -> str:
     )
 
 
-def send_zulip_message(content: str, channel: str, topic: str) -> None:
+def get_zulip_client():
     import zulip
 
-    client = zulip.Client(
+    return zulip.Client(
         email="dashboard-bot@napari.zulipchat.com",
         api_key=os.environ.get("ZULIP_API_KEY"),
         site="https://napari.zulipchat.com",
     )
+
+
+def send_zulip_message(client, content: str, channel: str, topic: str) -> int:
+    """Send a channel message and return its id."""
     # Zulip accepts either a channel name or its numeric id
     to: str | int = int(channel) if channel.isdigit() else channel
     result = client.send_message(
@@ -229,6 +245,17 @@ def send_zulip_message(content: str, channel: str, topic: str) -> None:
     )
     if result.get("result") != "success":
         raise RuntimeError(f"Failed to send Zulip message: {result}")
+    return result["id"]
+
+
+def add_zulip_reaction(client, message_id: int, emoji_name: str) -> bool:
+    result = client.add_reaction(
+        {"message_id": message_id, "emoji_name": emoji_name}
+    )
+    if result.get("result") != "success":
+        logger.error("Failed to add reaction to %s: %s", message_id, result)
+        return False
+    return True
 
 
 def main() -> None:
@@ -268,23 +295,33 @@ def main() -> None:
     logger.info("Looking for meetings between %s and %s", start, end)
     meetings = get_meetings(fetch_calendar(), start, end)
 
+    # (topic, content, add RSVP reaction)
     messages = [
-        (meeting_topic(meeting), format_meeting_message(meeting))
+        (meeting_topic(meeting), format_meeting_message(meeting), True)
         for meeting in meetings
     ]
     if args.topic:
         messages = [
-            (args.topic, f"**Topic:** `{topic}`\n\n{content}")
-            for topic, content in messages
-        ] or [(args.topic, format_no_meetings(start, end))]
+            (args.topic, f"**Topic:** `{topic}`\n\n{content}", react)
+            for topic, content, react in messages
+        ] or [(args.topic, format_no_meetings(start, end), False)]
     elif not messages:
         logger.info("No meetings to announce")
 
-    for topic, content in messages:
+    client = get_zulip_client() if args.send_zulip else None
+    reactions_ok = True
+    for topic, content, react in messages:
         print(f"=== {topic}\n{content}\n")
-        if args.send_zulip:
-            logger.info("Sending message to %s > %s", args.channel, topic)
-            send_zulip_message(content, args.channel, topic)
+        if client is None:
+            continue
+        logger.info("Sending message to %s > %s", args.channel, topic)
+        message_id = send_zulip_message(client, content, args.channel, topic)
+        if react:
+            reactions_ok &= add_zulip_reaction(client, message_id, RSVP_EMOJI)
+
+    if not reactions_ok:
+        # the announcements are out, but report the problem in CI
+        sys.exit(1)
 
 
 if __name__ == "__main__":

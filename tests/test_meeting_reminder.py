@@ -3,6 +3,7 @@ from datetime import date, datetime, timezone
 import icalendar
 import pytest
 
+from napari_dashboard import meeting_reminder
 from napari_dashboard.meeting_reminder import (
     Meeting,
     format_meeting_message,
@@ -213,6 +214,9 @@ def test_format_meeting_message():
         "your topics of discussion and come join us on "
         "[Zoom](https://zoom.us/j/1)! :napari:\n"
         "\n"
+        "Planning to join? React with :+1: to this message "
+        "so we know who to expect.\n"
+        "\n"
         "Zoom: https://zoom.us/j/1\n"
         "Agenda: https://hackmd.io/a"
     )
@@ -229,10 +233,13 @@ def test_format_meeting_message_missing_links():
     assert "zoom" not in only_agenda.lower()
 
     no_links = format_meeting_message(meeting(start))
-    assert no_links.endswith(
+    assert (
         "See the [napari calendar]"
         "(https://napari.org/stable/community/meeting_schedule.html) "
         "for details. :napari:"
+    ) in no_links
+    assert no_links.endswith(
+        "React with :+1: to this message so we know who to expect."
     )
 
 
@@ -242,3 +249,131 @@ def test_format_no_meetings():
         "No napari meetings are scheduled from Saturday, November 14 "
         "to Monday, November 16 (UTC dates)."
     )
+
+
+class FakeZulipClient:
+    def __init__(self, reaction_result="success"):
+        self.messages = []
+        self.reactions = []
+        self.reaction_result = reaction_result
+
+    def send_message(self, request):
+        self.messages.append(request)
+        return {"result": "success", "id": len(self.messages)}
+
+    def add_reaction(self, request):
+        self.reactions.append(request)
+        return {"result": self.reaction_result}
+
+
+@pytest.fixture
+def run_main(monkeypatch, calendar):
+    def run(*args, client=None):
+        client = client or FakeZulipClient()
+        monkeypatch.setattr(
+            meeting_reminder, "fetch_calendar", lambda: calendar
+        )
+        monkeypatch.setattr(
+            meeting_reminder, "get_zulip_client", lambda: client
+        )
+        monkeypatch.setattr("sys.argv", ["meeting_reminder", *args])
+        meeting_reminder.main()
+        return client
+
+    return run
+
+
+def test_main_topic_per_meeting(run_main):
+    client = run_main(
+        "--window",
+        "monday",
+        "--today",
+        "2026-11-16",
+        "--send-zulip",
+        "--channel",
+        "215290",
+    )
+    assert [(m["to"], m["topic"]) for m in client.messages] == [
+        (215290, "2026-11-17 Tim: napari Code Cafe")
+    ]
+    assert client.reactions == [{"message_id": 1, "emoji_name": "+1"}]
+
+
+def test_main_single_topic(run_main):
+    client = run_main(
+        "--window",
+        "next-week",
+        "--today",
+        "2026-11-20",
+        "--send-zulip",
+        "--topic",
+        "Meeting reminder",
+    )
+    assert [m["topic"] for m in client.messages] == ["Meeting reminder"] * 2
+    assert [m["to"] for m in client.messages] == ["metrics and analytics"] * 2
+    assert client.messages[0]["content"].startswith(
+        "**Topic:** `2026-11-25 napari community meeting (Eurasia)`\n\n"
+        "Howdy napari folks!"
+    )
+    assert [r["message_id"] for r in client.reactions] == [1, 2]
+
+
+def test_main_no_meetings(run_main):
+    # nothing is posted to the community channel
+    client = run_main(
+        "--window",
+        "friday",
+        "--today",
+        "2026-11-13",
+        "--send-zulip",
+        "--channel",
+        "215290",
+    )
+    assert client.messages == []
+
+    # the test topic gets a note, without a reaction
+    client = run_main(
+        "--window",
+        "friday",
+        "--today",
+        "2026-11-13",
+        "--send-zulip",
+        "--topic",
+        "Meeting reminder",
+    )
+    assert [m["content"] for m in client.messages] == [
+        (
+            "No napari meetings are scheduled from Saturday, November 14 "
+            "to Monday, November 16 (UTC dates)."
+        )
+    ]
+    assert client.reactions == []
+
+
+def test_main_dry_run_does_not_connect(run_main, monkeypatch):
+    def fail():
+        raise AssertionError("Zulip client created in a dry run")
+
+    monkeypatch.setattr(meeting_reminder, "get_zulip_client", fail)
+    monkeypatch.setattr(meeting_reminder, "fetch_calendar", lambda: None)
+    monkeypatch.setattr(meeting_reminder, "get_meetings", lambda *args: [])
+    monkeypatch.setattr("sys.argv", ["meeting_reminder"])
+    meeting_reminder.main()
+
+
+def test_main_failed_reaction_still_posts_everything(run_main):
+    client = FakeZulipClient(reaction_result="error")
+    with pytest.raises(SystemExit) as exc_info:
+        run_main(
+            "--window",
+            "next-week",
+            "--today",
+            "2026-11-20",
+            "--send-zulip",
+            "--channel",
+            "215290",
+            client=client,
+        )
+    assert exc_info.value.code == 1
+    assert len(client.messages) == 2
+    assert len(client.reactions) == 2
