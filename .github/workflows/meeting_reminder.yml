@@ -1,7 +1,8 @@
 name: Meeting reminder
 
 # Announce upcoming meetings from the napari calendar in the
-# "community-meeting" Zulip channel, one topic per meeting:
+# "community-meeting" Zulip channel (core team meetings in "core-team"),
+# one topic per meeting:
 #  * Friday: meetings on Saturday, Sunday and Monday,
 #  * Monday: meetings from Tuesday to Friday.
 # A push to main (or a manual run) posts the whole next week to the
@@ -51,13 +52,17 @@ jobs:
               "0 8 * * 1") WINDOW=monday ;;
               *) echo "Unknown schedule: $SCHEDULE"; exit 1 ;;
             esac
-            # 215290 is the id of the "community-meeting" channel;
-            # every meeting gets its own topic
+            # 215290 is the id of the "community-meeting" channel,
+            # 320379 of "core-team"; every meeting gets its own topic
             uv run traceback-with-variables napari_dashboard.meeting_reminder \
-              --window "$WINDOW" --send-zulip --channel 215290
+              --window "$WINDOW" --send-zulip --channel 215290 \
+              --core-team-channel 320379
           else
+            # "metrics and analytics" is private, so core team meetings
+            # may be posted there too
             uv run traceback-with-variables napari_dashboard.meeting_reminder \
               --window next-week --send-zulip --channel "metrics and analytics" \
+              --core-team-channel "metrics and analytics" \
               --topic "Meeting reminder"
           fi
         env:

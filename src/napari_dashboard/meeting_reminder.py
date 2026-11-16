@@ -17,8 +17,10 @@ All window boundaries are midnight UTC.
 
 Every meeting gets its own message in its own topic named like
 ``2026-11-12/13 napari community meeting (Pacific)``, following the
-convention used in the ``community-meeting`` channel. With ``--topic``
-all messages go to that single topic instead (used for testing).
+convention used in the ``community-meeting`` channel. Core team meetings
+go to ``--core-team-channel`` and are skipped when it is not given. With
+``--topic`` all messages go to that single topic instead (used for
+testing).
 """
 
 from __future__ import annotations
@@ -50,8 +52,11 @@ ICAL_URL = (
     f"{quote(CALENDAR_ID)}/public/basic.ics"
 )
 
-# Meetings with these words in the title are not announced publicly.
-EXCLUDED_TITLE_PATTERNS = ("core team", "steering council")
+# Meetings with these words in the title are not announced.
+EXCLUDED_TITLE_PATTERNS = ("code cafe", "steering council")
+# Meetings with these words in the title are announced only in the
+# core team channel.
+CORE_TEAM_TITLE_PATTERNS = ("core team",)
 
 # Used to name topics with every date on which the meeting happens during
 # waking hours somewhere in the community, e.g. "2026-11-12/13".
@@ -134,6 +139,11 @@ def _is_announced(event: icalendar.Event) -> bool:
         return False
     lower_title = title.lower()
     return not any(word in lower_title for word in EXCLUDED_TITLE_PATTERNS)
+
+
+def is_core_team_meeting(meeting: Meeting) -> bool:
+    lower_title = meeting.title.lower()
+    return any(word in lower_title for word in CORE_TEAM_TITLE_PATTERNS)
 
 
 def get_meetings(
@@ -290,6 +300,14 @@ def main() -> None:
         help="Zulip channel name or numeric id",
     )
     parser.add_argument(
+        "--core-team-channel",
+        default=None,
+        help=(
+            "Zulip channel name or numeric id for core team meetings. "
+            "Without it core team meetings are not announced."
+        ),
+    )
+    parser.add_argument(
         "--topic",
         default=None,
         help=(
@@ -305,27 +323,40 @@ def main() -> None:
     logger.info("Looking for meetings between %s and %s", start, end)
     meetings = get_meetings(fetch_calendar(), start, end)
 
-    # (topic, content, add RSVP reaction)
-    messages = [
-        (meeting_topic(meeting), format_meeting_message(meeting), True)
-        for meeting in meetings
-    ]
+    # (channel, topic, content, add RSVP reaction)
+    messages = []
+    for meeting in meetings:
+        if is_core_team_meeting(meeting):
+            channel = args.core_team_channel
+        else:
+            channel = args.channel
+        if channel is None:
+            logger.info(
+                "Skipping %r, no --core-team-channel given", meeting.title
+            )
+            continue
+        topic = meeting_topic(meeting)
+        messages.append(
+            (channel, topic, format_meeting_message(meeting), True)
+        )
     if args.topic:
         messages = [
-            (args.topic, f"**Topic:** `{topic}`\n\n{content}", react)
-            for topic, content, react in messages
-        ] or [(args.topic, format_no_meetings(start, end), False)]
+            (channel, args.topic, f"**Topic:** `{topic}`\n\n{content}", react)
+            for channel, topic, content, react in messages
+        ] or [
+            (args.channel, args.topic, format_no_meetings(start, end), False)
+        ]
     elif not messages:
         logger.info("No meetings to announce")
 
     client = get_zulip_client() if args.send_zulip else None
     reactions_ok = True
-    for topic, content, react in messages:
-        print(f"=== {topic}\n{content}\n")
+    for channel, topic, content, react in messages:
+        print(f"=== {channel} > {topic}\n{content}\n")
         if client is None:
             continue
-        logger.info("Sending message to %s > %s", args.channel, topic)
-        message_id = send_zulip_message(client, content, args.channel, topic)
+        logger.info("Sending message to %s > %s", channel, topic)
+        message_id = send_zulip_message(client, content, channel, topic)
         if react:
             reactions_ok &= add_zulip_reaction(client, message_id, RSVP_EMOJI)
 

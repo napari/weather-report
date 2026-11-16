@@ -52,14 +52,20 @@ DTSTART;TZID=America/Los_Angeles:20261119T083000
 DTEND;TZID=America/Los_Angeles:20261119T093000
 END:VEVENT
 BEGIN:VEVENT
-UID:cafe@test
-SUMMARY:Tim: napari Code Cafe
+UID:triage@test
+SUMMARY:napari triage meeting
 DTSTART:20261117T170000Z
 DTEND:20261117T180000Z
 DESCRIPTION:Join <a href="https://www.google.com/url?q=https://numfocus-org
  .zoom.us/j/333&amp;sa=D&amp;source=calendar">Zoom</a>\, notes <a href="htt
  ps://www.google.com/url?q=https://hackmd.io/@napari/cafe/edit&amp;sa=D">he
  re</a>.
+END:VEVENT
+BEGIN:VEVENT
+UID:cafe@test
+SUMMARY:Tim: napari Code Cafe
+DTSTART:20261118T170000Z
+DTEND:20261118T180000Z
 END:VEVENT
 BEGIN:VEVENT
 UID:cancelled-title@test
@@ -137,12 +143,13 @@ def test_get_window_unknown():
 def test_get_meetings(calendar):
     meetings = get_meetings(calendar, utc(2026, 11, 16), utc(2026, 11, 30))
     # Not listed:
-    # - 2026-11-16 core team meeting (excluded title)
     # - 2026-11-18 Eurasia meeting (EXDATE) and v0.7.0 (all-day)
+    # - 2026-11-18 Code Cafe (excluded title)
     # - 2026-11-19 plugin working group (STATUS:CANCELLED instance)
     # - 2026-11-19 documentation working group ("CANCELED:" title)
     assert [(m.title, m.start) for m in meetings] == [
-        ("Tim: napari Code Cafe", utc(2026, 11, 17, 17)),
+        ("napari Core Team Meeting", utc(2026, 11, 16, 21)),
+        ("napari triage meeting", utc(2026, 11, 17, 17)),
         # moved from 9:00 to 11:00 Paris time
         ("napari community meeting (Eurasia)", utc(2026, 11, 25, 10)),
         ("plugin working group", utc(2026, 11, 26, 16, 30)),
@@ -162,9 +169,9 @@ def test_links(calendar):
     assert plugins.agenda is None
 
     # links only in an HTML description, wrapped in Google redirects
-    cafe = by_title["Tim: napari Code Cafe"]
-    assert cafe.zoom == "https://numfocus-org.zoom.us/j/333"
-    assert cafe.agenda == "https://hackmd.io/@napari/cafe/edit"
+    triage = by_title["napari triage meeting"]
+    assert triage.zoom == "https://numfocus-org.zoom.us/j/333"
+    assert triage.agenda == "https://hackmd.io/@napari/cafe/edit"
 
 
 def meeting(start, zoom=None, agenda=None, title="community meeting"):
@@ -294,9 +301,47 @@ def test_main_topic_per_meeting(run_main):
         "215290",
     )
     assert [(m["to"], m["topic"]) for m in client.messages] == [
-        (215290, "2026-11-17 Tim: napari Code Cafe")
+        (215290, "2026-11-17 napari triage meeting")
     ]
     assert client.reactions == [{"message_id": 1, "emoji_name": "+1"}]
+
+
+def test_main_core_team_channel(run_main):
+    args = ("--window", "next-week", "--today", "2026-11-13", "--send-zulip")
+    client = run_main(
+        *args, "--channel", "215290", "--core-team-channel", "320379"
+    )
+    assert [(m["to"], m["topic"]) for m in client.messages] == [
+        (320379, "2026-11-16/17 napari Core Team Meeting"),
+        (215290, "2026-11-17 napari triage meeting"),
+    ]
+    assert [r["message_id"] for r in client.reactions] == [1, 2]
+
+    # without --core-team-channel core team meetings are not announced
+    client = run_main(*args, "--channel", "215290")
+    assert [(m["to"], m["topic"]) for m in client.messages] == [
+        (215290, "2026-11-17 napari triage meeting")
+    ]
+
+
+def test_main_core_team_single_topic(run_main):
+    client = run_main(
+        "--window",
+        "next-week",
+        "--today",
+        "2026-11-13",
+        "--send-zulip",
+        "--core-team-channel",
+        "metrics and analytics",
+        "--topic",
+        "Meeting reminder",
+    )
+    assert [(m["to"], m["topic"]) for m in client.messages] == [
+        ("metrics and analytics", "Meeting reminder")
+    ] * 2
+    assert client.messages[0]["content"].startswith(
+        "**Topic:** `2026-11-16/17 napari Core Team Meeting`"
+    )
 
 
 def test_main_single_topic(run_main):

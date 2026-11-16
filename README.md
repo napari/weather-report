@@ -27,7 +27,8 @@ There are three workflows triggered by GitHub Actions:
 
 3. `meeting_reminder.yml` - announces upcoming meetings from the
    [napari public calendar](https://napari.org/stable/community/meeting_schedule.html)
-   in the `community-meeting` Zulip stream. Events are read from the public iCal feed, so no Google API key is needed.
+   in the `community-meeting` Zulip stream, and core team meetings (with `core team` in the title) in the `core-team` stream.
+   Events are read from the public iCal feed, so no Google API key is needed.
     * Friday 12:00 UTC - meetings on Saturday, Sunday and Monday (so Monday meetings are announced before the weekend),
     * Monday 08:00 UTC - meetings from Tuesday to Friday.
 
@@ -35,12 +36,13 @@ There are three workflows triggered by GitHub Actions:
    The topic lists every date on which the meeting is during waking hours in America, Europe or Australia.
    The message asks people who plan to join to react with :+1:, and the bot adds the first :+1: itself,
    so the number of attendees is the reaction count minus one.
-   Cancelled meetings, all-day entries and meetings with `core team` or `steering council` in the title are skipped.
-   On every push to the `main` branch (and on manual run) meetings of the whole next week are sent to the single
-   `Meeting reminder` topic of the `metrics and analytics` stream to check that the bot works.
+   Cancelled meetings, all-day entries and meetings with `code cafe` or `steering council` in the title are skipped.
+   On every push to the `main` branch (and on manual run) meetings of the whole next week, including core team meetings,
+   are sent to the single `Meeting reminder` topic of the private `metrics and analytics` stream to check that the bot works.
 
    To preview the messages locally run `uv run python -m napari_dashboard.meeting_reminder --window next-week`
-   (`--window friday|monday|next-week`, `--today YYYY-MM-DD` to pretend another date).
+   (`--window friday|monday|next-week`, `--today YYYY-MM-DD` to pretend another date,
+   `--core-team-channel core-team` to include core team meetings).
 
 ## Configuration overview
 
