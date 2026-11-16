@@ -21,6 +21,8 @@ convention used in the ``community-meeting`` channel. With ``--topic``
 all messages go to that single topic instead (used for testing).
 """
 
+from __future__ import annotations
+
 import argparse
 import html
 import logging
@@ -29,12 +31,16 @@ import re
 import sys
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
+from typing import TYPE_CHECKING
 from urllib.parse import quote, unquote
 from zoneinfo import ZoneInfo
 
 import icalendar
 import recurring_ical_events
 import requests
+
+if TYPE_CHECKING:
+    import zulip
 
 logger = logging.getLogger(__name__)
 
@@ -226,7 +232,7 @@ def format_no_meetings(start: datetime, end: datetime) -> str:
     )
 
 
-def get_zulip_client():
+def get_zulip_client() -> zulip.Client:
     import zulip
 
     return zulip.Client(
@@ -236,7 +242,9 @@ def get_zulip_client():
     )
 
 
-def send_zulip_message(client, content: str, channel: str, topic: str) -> int:
+def send_zulip_message(
+    client: zulip.Client, content: str, channel: str, topic: str
+) -> int:
     """Send a channel message and return its id."""
     # Zulip accepts either a channel name or its numeric id
     to: str | int = int(channel) if channel.isdigit() else channel
@@ -248,7 +256,9 @@ def send_zulip_message(client, content: str, channel: str, topic: str) -> int:
     return result["id"]
 
 
-def add_zulip_reaction(client, message_id: int, emoji_name: str) -> bool:
+def add_zulip_reaction(
+    client: zulip.Client, message_id: int, emoji_name: str
+) -> bool:
     result = client.add_reaction(
         {"message_id": message_id, "emoji_name": emoji_name}
     )
